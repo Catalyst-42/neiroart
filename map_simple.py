@@ -1,7 +1,7 @@
 from random import choice, randint
-from PIL import Image
-from math import *
+
 import numpy
+from PIL import Image
 
 MAX_X = 256
 MAX_Y = 256
@@ -27,9 +27,9 @@ color_names = (
     'grey')
 
 data = numpy.zeros((MAX_X, MAX_Y, 3), dtype=numpy.uint8)
-data[:][:] = (21, 23, 32)
+data[:][:] = colors_RGB['bg']
 
-def randcolor(): return colors_RGB[choice(color_names)]
+# def randcolor(): return colors_RGB[choice(color_names)]
 
 def normalaize():
     global x, y
@@ -46,39 +46,39 @@ for i in range(MAX_ITERS):
     elif direction == 2: direction = choice((3, 4))
     elif direction == 3: direction = choice((1, 2))
     elif direction == 4: direction = choice((1, 2))
-    # color = [153, 102, 255] [54, 162, 235]
+    
     match direction:
         case 1:
             for _ in range(randint(2, 8)):
-                if all(data[x][y][:] == (21, 23, 32)): data[x][y] = (153, 102, 255)
-                elif all(data[x][y][:] == (153, 102, 255)): data[x][y] = (54, 162, 235)
-                else: data[x][y] = (75, 192, 192)
-                y+=1#randint(1, 8)
+                if all(data[x][y][:] == colors_RGB['bg']): data[x][y] = colors_RGB['purple']
+                elif all(data[x][y][:] == colors_RGB['purple']): data[x][y] = colors_RGB['blue']
+                else: data[x][y] = colors_RGB['green']
+                y+=1 # randint(1, 8)
                 normalaize()
         case 2:
             for _ in range(randint(2, 8)):
-                if all(data[x][y][:] == (21, 23, 32)): data[x][y] = (153, 102, 255)
-                elif all(data[x][y][:] == (153, 102, 255)): data[x][y] = (54, 162, 235)
-                else: data[x][y] = (75, 192, 192)
-                y-=1#randint(1, 8)
+                if all(data[x][y][:] == colors_RGB['bg']): data[x][y] = colors_RGB['purple']
+                elif all(data[x][y][:] == colors_RGB['purple']): data[x][y] = colors_RGB['blue']
+                else: data[x][y] = colors_RGB['green']
+                y-=1 # randint(1, 8)
                 normalaize()
         case 3:
             for _ in range(randint(2, 8)):
-                if all(data[x][y][:] == (21, 23, 32)): data[x][y] = (153, 102, 255)
-                elif all(data[x][y][:] == (153, 102, 255)): data[x][y] = (54, 162, 235)
-                else: data[x][y] = (75, 192, 192)
-                x+=1#randint(1, 8)
+                if all(data[x][y][:] == colors_RGB['bg']): data[x][y] = colors_RGB['purple']
+                elif all(data[x][y][:] == colors_RGB['purple']): data[x][y] = colors_RGB['blue']
+                else: data[x][y] = colors_RGB['green']
+                x+=1 # randint(1, 8)
                 normalaize()
         case 4:
             for _ in range(randint(2, 8)):
-                if all(data[x][y][:] == (21, 23, 32)): data[x][y] = (153, 102, 255)
-                elif all(data[x][y][:] == (153, 102, 255)): data[x][y] = (54, 162, 235)
-                else: data[x][y] = (75, 192, 192)
-                x-=1#randint(1, 8)
+                if all(data[x][y][:] == colors_RGB['bg']): data[x][y] = colors_RGB['purple']
+                elif all(data[x][y][:] == colors_RGB['purple']): data[x][y] = colors_RGB['blue']
+                else: data[x][y] = colors_RGB['green']
+                x-=1 # randint(1, 8)
                 normalaize()
 
 image = Image.fromarray(data)
-image = image.transpose(Image.ROTATE_90)
-image = image.resize((RESIZE_TO[0], RESIZE_TO[1]), resample=Image.BOX)
+image = image.transpose(Image.Transpose.ROTATE_90)
+image = image.resize(RESIZE_TO, resample=Image.Resampling.BOX)
 image.save('image.png')
 image.show()

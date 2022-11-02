@@ -1,9 +1,14 @@
-from PIL import Image, ImageDraw, ImageFont
 from random import choice
-from math import *
-import numpy
 
-#Metafont: https://github.com/Catalyst-42/Fonts/tree/main/MetaFont
+import numpy
+from PIL import Image, ImageDraw, ImageFont
+
+# MetaFont: https://github.com/Catalyst-42/Fonts/tree/main/MetaFont
+
+# 12 = one symbol
+MAX_X = 12*10
+MAX_Y = 12*10
+RESIZE_TO = (MAX_X*4, MAX_Y*4)
 
 colors_RGB = {
     'red': (255, 99, 132),
@@ -34,16 +39,11 @@ color_names = (
     'purple',
     'grey')
 
-# 12 = 1 symbol
-MAX_X = 12*10
-MAX_Y = 12*10
-RESIZE_TO = (MAX_X*4, MAX_Y*4)
-
 data = numpy.zeros((MAX_X, MAX_Y, 3), dtype=numpy.uint8)
 data[:][:] = colors_RGB['bg']
 image = Image.fromarray(data)
 
-def randcolor(): return colors_RGB[choice(color_names)]
+# def randcolor(): return colors_RGB[choice(color_names)]
 def randhexcolor(): return colors_HEX[choice(color_names)]
 
 glyphs = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKL" + \
@@ -76,6 +76,6 @@ for x in range(MAX_X//12):
     for y in range(MAX_Y//12):
         draw.text([x*12+2, y*12+2], choice(glyphs), font=ImageFont.truetype("./fonts/MetaFont.ttf"), fill=randhexcolor())
 
-image = image.resize((RESIZE_TO[0], RESIZE_TO[1]), resample=Image.BOX)
+image = image.resize(RESIZE_TO, resample=Image.Resampling.BOX)
 image.save('image.png')
 image.show()
