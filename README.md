@@ -25,12 +25,12 @@ There are some python packages required for these scripts to work:
 To setup the environment install modules according to `requirements.txt`:
 
 ```
-$ python3 -m pip install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 ### Settings
 
-In almost every script the following parameters can be found:
+The following parameters can be found in almost every script file:
 
 - `MAX_X` = the picture length;
 - `MAX_Y` = the picture height;
@@ -41,15 +41,15 @@ In almost every script the following parameters can be found:
 
 #### `map_simple.py`
 
-<img src="./img/map_simple.png" width=400px alt="map_simple">
+<img src="./img/map-simple.png" width=400px alt="map_simple">
 
 #### `map_linear.py`
 
-<img src="./img/map_linear.png" width=400px alt="map_linear">
+<img src="./img/map-linear.png" width=400px alt="map_linear">
 
 #### `map_squared.py`
 
-<img src="./img/map_squared.png" width=400px alt="map_squared">
+<img src="./img/map-squared.png" width=400px alt="map_squared">
 
 ## Generation out of texture and symbol sets
 
