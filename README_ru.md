@@ -22,7 +22,7 @@
 - numpy
 - Pillow
 
-Для настройки среды установите модули в соответствии с `requirements.txt`:
+Для настройки среды установите пакеты в соответствии с `requirements.txt`:
 
 ```
 $ pip3 install -r requirements.txt

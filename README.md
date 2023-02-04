@@ -22,7 +22,7 @@ There are some python packages required for these scripts to work:
 - numpy
 - Pillow
 
-To setup the environment install modules according to `requirements.txt`:
+To set up the environment, install the packages according to `requirements.txt`:
 
 ```
 $ pip3 install -r requirements.txt
