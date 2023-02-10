@@ -7,11 +7,11 @@ RESIZE_TO = (512*2, 256*2)
 red = (227, 81, 0)
 blue = (97, 162, 255)
 
-image = Image.open('./enemies/card.png').convert('RGBA')
+image = Image.open('src/img/enemies/card.png').convert('RGBA')
 draw = ImageDraw.Draw(image)
-faces = Image.open('./enemies/faces.png').convert('RGBA')
-numbers = Image.open('./enemies/numbers.png').convert('RGBA')
-effects = Image.open('./enemies/effects.png').convert('RGBA')
+faces = Image.open('src/img/enemies/faces.png').convert('RGBA')
+numbers = Image.open('src/img/enemies/numbers.png').convert('RGBA')
+effects = Image.open('src/img/enemies/effects.png').convert('RGBA')
 
 x = randint(0, 30)*16
 face = faces.crop((x, 0, x+16, 16))
