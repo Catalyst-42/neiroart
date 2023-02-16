@@ -74,7 +74,7 @@ draw = ImageDraw.Draw(image)
 
 for x in range(MAX_X//12):
     for y in range(MAX_Y//12):
-        draw.text([x*12+2, y*12+2], choice(glyphs), font=ImageFont.truetype("./fonts/MetaFont.ttf"), fill=randhexcolor())
+        draw.text([x*12+2, y*12+2], choice(glyphs), font=ImageFont.truetype("src/fonts/MetaFont.ttf"), fill=randhexcolor())
 
 image = image.resize(RESIZE_TO, resample=Image.Resampling.BOX)
 image.save('image.png')

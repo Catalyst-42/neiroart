@@ -22,10 +22,10 @@
 - numpy
 - Pillow
 
-Для настройки среды установите модули в соответствии с `requirements.txt`:
+Для настройки среды установите пакеты в соответствии с `requirements.txt`:
 
 ```
-$ python3 -m pip install -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 ### Настройки
@@ -41,15 +41,15 @@ $ python3 -m pip install -r requirements.txt
 
 #### `map_simple.py`
 
-<img src="./img/map_simple.png" width=400px alt="map_simple">
+<img src="./img/map-simple.png" width=400px alt="map_simple">
 
 #### `map_linear.py`
 
-<img src="./img/map_linear.png" width=400px alt="map_linear">
+<img src="./img/map-linear.png" width=400px alt="map_linear">
 
 #### `map_squared.py`
 
-<img src="./img/map_squared.png" width=400px alt="map_squared">
+<img src="./img/map-squared.png" width=400px alt="map_squared">
 
 ## Генерация из набора текстур и символов
 
