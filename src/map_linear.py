@@ -1,57 +1,56 @@
 from random import choice, randint
-
-import numpy
+from colors import RGB, BLACK
 from PIL import Image
 
-MAX_X = 256
-MAX_Y = 256
-MAX_ITERS = 1024
-RESIZE_TO = (512, 512)
+import numpy
 
-colors_RGB = {
-    'red': (255, 99, 132),
-    'orange': (255, 159, 64),
-    'yellow': (255, 205, 86),
-    'green': (75, 192, 192),
-    'blue': (54, 162, 235),
-    'purple': (153, 102, 255),
-    'grey': (201, 203, 207),
-    'bg': (21, 23, 32)}
-color_names = (
-    'red',
-    'orange',
-    'purple')
+WIDTH = 256
+HEIGHT = 256
 
-data = numpy.zeros((MAX_X, MAX_Y, 3), dtype=numpy.uint8)
-data[:][:] = colors_RGB['bg']
-color = colors_RGB['blue']
+COLOR = RGB['purple']
+SWITCH_COLORS = (RGB['yellow'], RGB['red'], RGB['green'])
+BACKGROUND_COLOR = BLACK
 
-def randcolor(): return colors_RGB[choice(color_names)]
+MAX_ITERS = 512
+RESIZE_TO = (WIDTH*2, HEIGHT*2)
+
+data = numpy.zeros((WIDTH, HEIGHT, 3), dtype=numpy.uint8)
+data[:][:] = BACKGROUND_COLOR
 
 def draw_side(x, y, side):
-    global color
-    if randint(1, 100) == 1:
-        color = randcolor()
+    global COLOR
 
-    def right_enter(): data[x:x+3, y] = color # right
-    def left_enter(): data[x-2:x+1, y] = color # left
-    def up_enter(): data[x, y:y+3] = color # up
-    def down_enter(): data[x, y-2:y+1] = color # down
+    # change color in 1% change
+    if randint(1, 100) == 42:
+        COLOR = choice(SWITCH_COLORS)
+
+    # draw tile
+    def right_enter(): data[x:x+3, y] = COLOR
+    def left_enter(): data[x-2:x+1, y] = COLOR
+    def up_enter(): data[x, y:y+3] = COLOR
+    def down_enter(): data[x, y-2:y+1] = COLOR
 
     if side in (1, 2, 4, 8, 11, 12, 13, 15): 
         right_enter()
-        if data[x+6, y][0] == 21 and (x+6, y) not in working_stack: working_stack.append((x+6, y))
+        if data[x+6, y][0] == 21 and (x+6, y) not in working_stack: 
+            working_stack.append((x+6, y))
+
     if side in (1, 2, 6, 9, 10, 13, 14, 15): 
         left_enter()
-        if data[x-6, y][0] == 21 and (x-6, y) not in working_stack: working_stack.append((x-6, y))
+        if data[x-6, y][0] == 21 and (x-6, y) not in working_stack:
+            working_stack.append((x-6, y))
+    
     if side in (1, 3, 5, 8, 9, 12, 13, 14): 
         up_enter()
-        if data[x, y+6][0] == 21 and (x, y+6) not in working_stack: working_stack.append((x, y+6))
+        if data[x, y+6][0] == 21 and (x, y+6) not in working_stack:
+            working_stack.append((x, y+6))
+    
     if side in (1, 3, 7, 10, 11, 12, 14, 15): 
         down_enter()
-        if data[x, y-6][0] == 21 and (x, y-6) not in working_stack: working_stack.append((x, y-6))
+        if data[x, y-6][0] == 21 and (x, y-6) not in working_stack:
+            working_stack.append((x, y-6))
 
-# Проверка всех ячеек draw_side
+# debug: draw all tile samples
 # x, y = 20, 44
 # working_stack = []
 # for side in range(16):
@@ -60,67 +59,61 @@ def draw_side(x, y, side):
 #         x = 20
 #         y -= 6
 #     draw_side(x, y, side)
-# data[x, y] = colors_RGB['red']
+#     data[x, y] = RGB['red'] # center
 
-x, y = MAX_X//2, MAX_Y//2
+x, y = WIDTH//2, HEIGHT//2
 working_stack = []
 iters = 0
 
+# draw first tile
 draw_side(x, y, choice((1, 12, 13, 14, 15)))
 
+# generate tiles
 while len(working_stack):
-    iters += 1
     x, y = working_stack.pop(randint(0, len(working_stack)-1))
-    choice_side = [_ for _ in range(1, 16)]
+    sides = [side for side in range(1, 16)]
+
+    # exclude unavailable sides to expanding
+    def remove_sides(*sides_to_remove):
+        for side in sides_to_remove:
+            if side in sides: sides.remove(side)
 
     # right
-    if data[x+6, y][0] != 21 and data[x+4, y][0] == 21:
-        for _ in (1, 2, 4, 8, 11, 12, 13, 15):
-            if _ in choice_side: choice_side.remove(_)
-    elif data[x+6, y][0] != 21 and data[x+4, y][0] != 21:
-        for _ in (0, 3, 5, 6, 7, 9, 10, 14):
-            if _ in choice_side: choice_side.remove(_)
+    if data[x+6, y][0] != 21 and data[x+4, y][0] == 21: remove_sides(1, 2, 4, 8, 11, 12, 13, 15)
+    elif data[x+6, y][0] != 21 and data[x+4, y][0] != 21: remove_sides(0, 3, 5, 6, 7, 9, 10, 14)
 
     # left
-    if data[x-6, y][0] != 21 and data[x-4, y][0] == 21:
-        for _ in (1, 2, 6, 9, 10, 13, 14, 15):
-            if _ in choice_side: choice_side.remove(_)
-    elif data[x-6, y][0] != 21 and data[x-4, y][0] != 21:
-        for _ in (0, 3, 4, 5, 7, 8, 11, 12):
-            if _ in choice_side: choice_side.remove(_)
+    if data[x-6, y][0] != 21 and data[x-4, y][0] == 21: remove_sides(1, 2, 6, 9, 10, 13, 14, 15)
+    elif data[x-6, y][0] != 21 and data[x-4, y][0] != 21: remove_sides(0, 3, 4, 5, 7, 8, 11, 12)
 
-    #  up
-    if data[x, y+6][0] != 21 and data[x, y+4][0] == 21:
-        for _ in (1, 3, 5, 8, 9, 12, 13, 14):
-            if _ in choice_side: choice_side.remove(_)
-    elif data[x, y+6][0] != 21 and data[x, y+4][0] != 21:
-        for _ in (0, 2, 4, 6, 7, 10, 11, 15):
-            if _ in choice_side: choice_side.remove(_)
+    # up
+    if data[x, y+6][0] != 21 and data[x, y+4][0] == 21: remove_sides(1, 3, 5, 8, 9, 12, 13, 14)
+    elif data[x, y+6][0] != 21 and data[x, y+4][0] != 21: remove_sides(0, 2, 4, 6, 7, 10, 11, 15)
 
     # down
-    if data[x, y-6][0] != 21 and data[x, y-4][0] == 21:
-        for _ in (1, 3, 7, 10, 11, 12, 14, 15):
-            if _ in choice_side: choice_side.remove(_)
-    elif data[x, y-6][0] != 21 and data[x, y-4][0] != 21:
-        for _ in (0, 2, 4, 5, 6, 8, 9, 13):
-            if _ in choice_side: choice_side.remove(_)
+    if data[x, y-6][0] != 21 and data[x, y-4][0] == 21: remove_sides(1, 3, 7, 10, 11, 12, 14, 15)
+    elif data[x, y-6][0] != 21 and data[x, y-4][0] != 21: remove_sides(0, 2, 4, 5, 6, 8, 9, 13)
 
-    # more straight path
-    # if 2 in choice_side: choice_side.append(2); choice_side.append(2); choice_side.append(2)
-    # if 2 in choice_side: choice_side.append(2); choice_side.append(2); choice_side.append(2)
+    # add more straight paths (better on huge maps)
+    # if 2 in sides: sides.append(2); sides.append(2); sides.append(2)
+    # if 2 in sides: sides.append(2); sides.append(2); sides.append(2)
+    
+    # make dead ends
+    if iters > MAX_ITERS or not 12 < x < (WIDTH-12) or not 12 < y < (HEIGHT-12):
+        for side in range(4, 8):
+            if side in sides: sides = [side]
 
-    if not 12<x<(MAX_X-12) or not 12<y<(MAX_Y-12) or iters > MAX_ITERS:
-        for _ in range(4, 8):
-            if _ in choice_side: choice_side = [_]
-
-    # print(choice_side)
-    side = choice(choice_side)
+    # choice available side and draw it
+    side = choice(sides)
     draw_side(x, y, side)
 
-print(f'iters: {iters}')
+    iters += 1
+
+print(f'Generation done ({iters})')
 
 image = Image.fromarray(data)
 image = image.transpose(Image.Transpose.ROTATE_90)
 image = image.resize(RESIZE_TO, resample=Image.Resampling.BOX)
+
 image.save('image.png')
 image.show()

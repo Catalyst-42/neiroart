@@ -1,56 +1,10 @@
+from colors import colors_bright, colors_common, colors_skin
 from random import randint
-
-import numpy as np
 from PIL import Image
 
-RESIZE_TO = (1024, 1024)
+import numpy as np
 
-colors_bright = ((358, 92, -8),
-                 (312, 64, -4),
-                 (284, 21, -2),
-                 (273, 77, -6),
-                 (244, 69, -6),
-                 (209, 69, -6),
-                 (188, 20, -2),
-                 (179, 79, -8),
-                 (136, 92, -15),
-                 (90, 83, -26),
-                 (136, 89, -44),
-                 (59, 83, -4),
-                 (46, 91, -12),
-                 (25, 90, -6),
-                 (59, 29, -4),
-                 (37, 48, -28),
-                 (358, 89, -39))
-colors_common = ((0, 78, -42),
-                 (0, 73, -23),
-                 (22, 78, -15),
-                 (60, 31, -2),
-                 (48, 64, -7),
-                 (36, 60, -36),
-                 (32, 70, -59),
-                 (26, 94, -73),
-                 (207, 18, -77),
-                 (240, 100, -97),
-                 (180, 17, -7),
-                 (224, 74, -6),
-                 (163, 94, -22),
-                 (69, 90, -29),
-                 (131, 86, -19),
-                 (298, 72, -11),
-                 (270, 77, -21))
-colors_skin = ((91, 17, -43),
-               (136, 41, -48),
-               (71, 30, -48),
-               (67, 62, 50),
-               (67, 35, -37),
-               (83, 93, -42),
-               (101, 62, -45),
-               (83, 93, -42),
-               (100, 41, -35),
-               (125, 58, -40),
-               (125, 40, -31),
-               (92, 25, -53))
+RESIZE_TO = (512, 512)
 
 '''
 Элемент    | Варианты с цветами      | Уникальные варианты
@@ -78,27 +32,30 @@ eyewear_id = randint(0, 16); eyewear_color = randint(1, 18)
 hat_id = randint(0, 14); hat_color = randint(1, 18)
 
 # 3(0)-1-3-0(0)-0(0)-1(10)-0(0)-5(5)-0(0)
-# background_id = 3; background_color = randint(1, 18)
+# background_id = 3; background_color = 0
 # skin_color = 1
 # cloth_id = 3
-# tidbit_id = 0; tidbit_color = randint(1, 18)
-# accessory_id = 0; accessory_color = randint(1, 18)
+# tidbit_id = 0; tidbit_color = 0
+# accessory_id = 0; accessory_color = 0
 # mustache_id = 1; mustache_color = 10
-# hair_id = 0; hair_color = randint(1, 18)
+# hair_id = 0; hair_color = 0
 # eyewear_id = 5; eyewear_color = 5
-# hat_id = 0; hat_color = randint(1, 18)
+# hat_id = 0; hat_color = 0
 
 def shift():
     for x in range(height):
         for y in range(width):
-            data[x][y][0] = round(color[0]*256/360)
-            data[x][y][1] = round(color[1]*256/100)
-            if data[x][y][2] >= -round(color[2]*256/100):
-                data[x][y][2] += round(color[2]*256/100)
-            elif data[x][y][2] > 8*256/100: data[x][y][2] = 0
+            data[x][y][0] = np.array(round(color[0]*256/360))
+            data[x][y][1] = np.array(round(color[1]*256/100))
+            
+            if data[x][y][2] >= np.array(-round(color[2]*256/100)):
+                data[x][y][2] += np.array(round(color[2]*256/100))
 
+            elif data[x][y][2] > np.array(8*256/100):
+                data[x][y][2] = np.array(0)
+            
 # pic bg
-image = Image.open(f'src/img/zombatar/backgrounds/{background_id}.png')
+image = Image.open(f'img/zombatar/backgrounds/{background_id}.png')
 if background_id == 1 and background_color != 1:
     alpha = image.getchannel('A'); image = image.convert('HSV')
     width, height = image.size
@@ -109,7 +66,7 @@ if background_id == 1 and background_color != 1:
 else: background_color = 0
 
 # skin
-skin = Image.open(f'src/img/zombatar/skin.png')
+skin = Image.open(f'img/zombatar/skin.png')
 alpha = skin.getchannel('A'); skin = skin.convert('HSV')
 width, height = skin.size
 data = np.array(skin)
@@ -117,17 +74,17 @@ color = colors_skin[skin_color-1]
 shift()
 skin = Image.fromarray(data, 'HSV'); skin = skin.convert('RGBA'); skin.putalpha(alpha)
 skin = skin.convert('RGBA'); image.paste(skin, (5, 0), skin)
-skin = Image.open(f'src/img/zombatar/blank.png'); image.paste(skin, (5, 0), skin)
+skin = Image.open(f'img/zombatar/blank.png'); image.paste(skin, (5, 0), skin)
 
 # cloth
 if cloth_id != 0:
-    cloth = Image.open(f'src/img/zombatar/clothes/{cloth_id}.png')
+    cloth = Image.open(f'img/zombatar/clothes/{cloth_id}.png')
     image.paste(cloth, (5, 0), cloth)
 
 # tidbit
 if tidbit_id != 0:
     if tidbit_id in (2, 3, 10, 11, 12):
-        tidbit = Image.open(f'src/img/zombatar/tidbits/{tidbit_id}.png')
+        tidbit = Image.open(f'img/zombatar/tidbits/{tidbit_id}.png')
         if tidbit_color != 1:
             alpha = tidbit.getchannel('A'); tidbit = tidbit.convert('HSV')
             width, height = tidbit.size
@@ -137,14 +94,14 @@ if tidbit_id != 0:
             tidbit = Image.fromarray(data, 'HSV'); tidbit = tidbit.convert('RGBA'); tidbit.putalpha(alpha)
     else: 
         tidbit_color = 0
-        tidbit = Image.open(f'src/img/zombatar/tidbits/{tidbit_id}.png')
+        tidbit = Image.open(f'img/zombatar/tidbits/{tidbit_id}.png')
     image.paste(tidbit, (5, 0), tidbit)
 else: tidbit_color = 0
 
 # accessory
 if accessory_id != 0:
     if accessory_id in (9, 11, 13, 14):
-        accessory = Image.open(f'src/img/zombatar/accessories/{accessory_id}.png')
+        accessory = Image.open(f'img/zombatar/accessories/{accessory_id}.png')
         if accessory_color != 1:
             alpha = accessory.getchannel('A'); accessory = accessory.convert('HSV')
             width, height = accessory.size
@@ -154,13 +111,13 @@ if accessory_id != 0:
             accessory = Image.fromarray(data, 'HSV'); accessory = accessory.convert('RGBA'); accessory.putalpha(alpha)
     else: 
         accessory_color = 0
-        accessory = Image.open(f'src/img/zombatar/accessories/{accessory_id}.png')
+        accessory = Image.open(f'img/zombatar/accessories/{accessory_id}.png')
     image.paste(accessory, (5, 0), accessory)
 else: accessory_color = 0
 
 # mustache
 if mustache_id != 0:
-    mustache = Image.open(f'src/img/zombatar/mustaches/{mustache_id}.png')
+    mustache = Image.open(f'img/zombatar/mustaches/{mustache_id}.png')
     if mustache_color != 1:
         alpha = mustache.getchannel('A'); mustache = mustache.convert('HSV')
         width, height = mustache.size
@@ -170,13 +127,13 @@ if mustache_id != 0:
         mustache = Image.fromarray(data, 'HSV'); mustache = mustache.convert('RGBA'); mustache.putalpha(alpha)
     image.paste(mustache, (5, 0), mustache)
     if mustache_id not in (2, 3, 5, 6, 7, 13, 17, 19, 20):
-        mustache = Image.open(f'src/img/zombatar/mustaches/{mustache_id}_.png')
+        mustache = Image.open(f'img/zombatar/mustaches/{mustache_id}_.png')
         image.paste(mustache, (5, 0), mustache)
 else: mustache_color = 0
 
 # hair
 if hair_id != 0:
-    hair = Image.open(f'src/img/zombatar/hairs/{hair_id}.png')
+    hair = Image.open(f'img/zombatar/hairs/{hair_id}.png')
     if hair_id == 3:
         hair_color = 0
         image.paste(hair, (5, 0), hair)
@@ -189,13 +146,13 @@ if hair_id != 0:
         hair = Image.fromarray(data, 'HSV'); hair = hair.convert('RGBA'); hair.putalpha(alpha)
     image.paste(hair, (5, 0), hair)
     if hair_id not in (3, 4, 5, 6, 7, 8, 9, 10, 16):
-        hair = Image.open(f'src/img/zombatar/hairs/{hair_id}_.png')
+        hair = Image.open(f'img/zombatar/hairs/{hair_id}_.png')
         image.paste(hair, (5, 0), hair)
 else: hair_color = 0
 
 # eyewear
 if eyewear_id != 0:
-    eyewear = Image.open(f'src/img/zombatar/eyewear/{eyewear_id}.png')
+    eyewear = Image.open(f'img/zombatar/eyewear/{eyewear_id}.png')
     if eyewear_id not in (13, 14, 15, 16):
         if eyewear_color != 1:
             alpha = eyewear.getchannel('A'); eyewear = eyewear.convert('HSV')
@@ -205,14 +162,14 @@ if eyewear_id != 0:
             shift()
             eyewear = Image.fromarray(data, 'HSV'); eyewear = eyewear.convert('RGBA'); eyewear.putalpha(alpha)
         image.paste(eyewear, (5, 0), eyewear)
-        eyewear = Image.open(f'src/img/zombatar/eyewear/{eyewear_id}_.png')
+        eyewear = Image.open(f'img/zombatar/eyewear/{eyewear_id}_.png')
     else: eyewear_color = 0
     image.paste(eyewear, (5, 0), eyewear)
 else: eyewear_color = 0
 
 # hat
 if hat_id != 0:
-    hat = Image.open(f'src/img/zombatar/hats/{hat_id}.png')
+    hat = Image.open(f'img/zombatar/hats/{hat_id}.png')
     if hat_id == 13: 
         hat_color = 0
         image.paste(hat, (5, 0), hat)
@@ -226,7 +183,7 @@ if hat_id != 0:
             hat = Image.fromarray(data, 'HSV'); hat = hat.convert('RGBA'); hat.putalpha(alpha)
         image.paste(hat, (5, 0), hat)
         if hat_id not in (2, 4, 5, 10, 12, 14):
-            hat = Image.open(f'src/img/zombatar/hats/{hat_id}_.png')
+            hat = Image.open(f'img/zombatar/hats/{hat_id}_.png')
             image.paste(hat, (5, 0), hat)
 else: hat_color = 0
 

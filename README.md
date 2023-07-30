@@ -1,66 +1,49 @@
-<table>
-    <th><a href="./README.md">ENG</a></th>
-    <th><a href="./README_ru.md">RUS</a></th>
-</table>
+# <img src="img/logo.png" style="width: 1ch; image-rendering: pixelated"> Neiroart
+A collection of scripts that generate images
 
-<div align=center>
-    <img src="./img/logo.png" width=128px alt="logo">
-</div>
-
-<h1 align=center>
-    Neiroart
-</h1>
-
-<p align=center>
-    A versatile collection of image generation scripts.
-</p>
-
-### Setup
-
-There are some python packages required for these scripts to work:
-
-- numpy
-- Pillow
-
-To set up the environment, install the packages according to `requirements.txt`:
+### Installation
+Scripts uses `PIL` and `numpy` to generate images.
 
 ```
-$ pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ### Settings
+Almost every file contains different constants for customization, you can change these constants to get new generation variations. 
 
-The following parameters can be found in almost every script file:
+All constants available for modification are written in `CAPITALIZED` letters.
 
-- `MAX_X` = the picture length;
-- `MAX_Y` = the picture height;
-- `MAX_ITERS` = the maximum amount of iterations during generation;
-- `RESIZE_TO` = a tuple for scaling in X and Y.
+### Samples
+Here some samples of generation.
 
-## Procedural generation
+`zombatars.py`
+| ![zombatar1](img/zombatar1.png) | ![zombatar2](img/zombatar2.png) | ![zombatar3](img/zombatar3.png) |
+| - | - | - |
 
-#### `map_simple.py`
+`enemies.py`
+| ![enemy1](img/enemy1.png) | ![enemy2](img/enemy2.png) | ![enemy3](img/enemy3.png) |
+| - | - | - |
 
-<img src="./img/map-simple.png" width=400px alt="map_simple">
+`glyphs.py`
+| ![glyphs1](img/glyphs1.png) | ![glyphs2](img/glyphs2.png) | ![glyphs3](img/glyphs3.png) |
+| - | - | - |
 
-#### `map_linear.py`
+---
 
-<img src="./img/map-linear.png" width=400px alt="map_linear">
+`map_simple.py`
+| ![map_simple1](img/map_simple1.png) | ![map_simple2](img/map_simple2.png) | ![map_simple3](img/map_simple3.png) |
+|-|-|-|
 
-#### `map_squared.py`
+`map_linear.py`
+| ![map_linear1](img/map_linear1.png) | ![map_linear2](img/map_linear2.png) | ![map_linear3](img/map_linear3.png) |
+|-|-|-|
 
-<img src="./img/map-squared.png" width=400px alt="map_squared">
+`map_squared.py`
+| ![map_squared1](img/map_squared1.png) | ![map_squared2](img/map_squared2.png) | ![map_squared3](img/map_squared3.png) |
+|-|-|-|
 
-## Generation out of texture and symbol sets
-
-#### `glyphs.py`
-
-<img src="./img/glyphs.png" width=400px alt="glyphs">
-
-#### `enemies.py`
-
-<img src="./img/enemies.png" width=400px alt="enemies">
-
-#### `zombatar.py`
-
-<img src="./img/zombatar.png" width=400px alt="zombatar">
+---
+`primes.py`  
+![primes1](img/primes1.png)  
+![primes2](img/primes2.png)  
+![primes3](img/primes3.png)  

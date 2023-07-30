@@ -1,84 +1,67 @@
 from random import choice, randint
-
-import numpy
+from colors import RGB, BLACK, WHITE
 from PIL import Image
 
-MAX_X = 256
-MAX_Y = 256
-MAX_ITERS = 4096
-RESIZE_TO = (512, 512)
+import numpy
 
-colors_RGB = {
-    'red': (255, 99, 132),
-    'orange': (255, 159, 64),
-    'yellow': (255, 205, 86),
-    'green': (75, 192, 192),
-    'blue': (54, 162, 235),
-    'purple': (153, 102, 255),
-    'grey': (201, 203, 207),
-    'bg': (21, 23, 32)}
-color_names = (
-    'red',
-    'orange',
-    'yellow',
-    'green',
-    'blue',
-    'purple',
-    'grey')
+WIDTH = 256
+HEIGHT = 256
 
-data = numpy.zeros((MAX_X, MAX_Y, 3), dtype=numpy.uint8)
-data[:][:] = colors_RGB['bg']
+COLORS = (WHITE, )
+BACKGROUND_COLOR = BLACK
 
-# def randcolor(): return colors_RGB[choice(color_names)]
+STEP_LENGTH_MIN = 1
+STEP_LENGTH_MAX = 1
 
-def normalaize():
-    global x, y
-    if x >= MAX_X: x-=MAX_X
-    if x < 0: x+=MAX_X
-    if y >= MAX_Y: y-=MAX_Y
-    if y < 0: y+=MAX_Y
+MAX_ITERS = 8192
+RESIZE_TO = (WIDTH*2, HEIGHT*2)
 
-x, y = MAX_X//2, MAX_Y//2
-direction = 1
+data = numpy.zeros((WIDTH, HEIGHT, 3), dtype=numpy.uint8)
+data[:][:] = BACKGROUND_COLOR
+
+x, y = WIDTH//2, HEIGHT//2
+direction = choice((1, 2, 3, 4))
+iters = 0
+
+# random walk
 for i in range(MAX_ITERS):
-    # 1 2 3 4 = up down rigth left
+    # set move directoin (can't move backwards)
     if direction == 1: direction = choice((3, 4))
     elif direction == 2: direction = choice((3, 4))
     elif direction == 3: direction = choice((1, 2))
     elif direction == 4: direction = choice((1, 2))
     
-    match direction:
-        case 1:
-            for _ in range(randint(2, 8)):
-                if all(data[x][y][:] == colors_RGB['bg']): data[x][y] = colors_RGB['purple']
-                elif all(data[x][y][:] == colors_RGB['purple']): data[x][y] = colors_RGB['blue']
-                else: data[x][y] = colors_RGB['green']
-                y+=1 # randint(1, 8)
-                normalaize()
-        case 2:
-            for _ in range(randint(2, 8)):
-                if all(data[x][y][:] == colors_RGB['bg']): data[x][y] = colors_RGB['purple']
-                elif all(data[x][y][:] == colors_RGB['purple']): data[x][y] = colors_RGB['blue']
-                else: data[x][y] = colors_RGB['green']
-                y-=1 # randint(1, 8)
-                normalaize()
-        case 3:
-            for _ in range(randint(2, 8)):
-                if all(data[x][y][:] == colors_RGB['bg']): data[x][y] = colors_RGB['purple']
-                elif all(data[x][y][:] == colors_RGB['purple']): data[x][y] = colors_RGB['blue']
-                else: data[x][y] = colors_RGB['green']
-                x+=1 # randint(1, 8)
-                normalaize()
-        case 4:
-            for _ in range(randint(2, 8)):
-                if all(data[x][y][:] == colors_RGB['bg']): data[x][y] = colors_RGB['purple']
-                elif all(data[x][y][:] == colors_RGB['purple']): data[x][y] = colors_RGB['blue']
-                else: data[x][y] = colors_RGB['green']
-                x-=1 # randint(1, 8)
-                normalaize()
+    # make n steps in one direction
+    for step in range(randint(STEP_LENGTH_MIN, STEP_LENGTH_MAX)):
+        # set layer color
+        if all(data[x][y][:] == BACKGROUND_COLOR): # background layer
+            data[x][y] = COLORS[0]
+        else:
+            for color in range(len(COLORS) - 1): # layers above COLORS[0]
+                if all(data[x][y][:] == COLORS[color]):
+                    data[x][y] = COLORS[color + 1]
+                    break
+        
+        # move in direction
+        match direction:
+            case 1: y+=1 # up
+            case 2: y-=1 # down
+            case 3: x+=1 # right
+            case 4: x-=1 # left
+        
+        # normalize x and y (map is tor)
+        if x >= WIDTH: x-=WIDTH
+        if x < 0: x+=WIDTH
+        if y >= HEIGHT: y-=HEIGHT
+        if y < 0: y+=HEIGHT
+
+        iters += 1
+
+print(f'Generation done ({iters})')
 
 image = Image.fromarray(data)
 image = image.transpose(Image.Transpose.ROTATE_90)
 image = image.resize(RESIZE_TO, resample=Image.Resampling.BOX)
+
 image.save('image.png')
 image.show()
