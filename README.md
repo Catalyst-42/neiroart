@@ -1,19 +1,19 @@
 # <img src="img/logo.png" style="width: 1ch; image-rendering: pixelated"> Neiroart
 A collection of scripts that generate images
 
-### Installation
+## Installation
 Scripts uses `PIL` and `numpy` to generate images.
 
 ```
 pip3 install -r requirements.txt
 ```
 
-### Settings
+## Settings
 Almost every file contains different constants for customization, you can change these constants to get new generation variations. 
 
 All constants available for modification are written in `CAPITALIZED` letters.
 
-### Samples
+## Samples
 Here some samples of generation.
 
 `zombatars.py`
