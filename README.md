@@ -43,7 +43,6 @@ Here some samples of generation.
 |-|-|-|
 
 ---
-`primes.py`  
-![primes1](img/primes1.png)  
-![primes2](img/primes2.png)  
-![primes3](img/primes3.png)  
+`primes.py`
+| ![primes1](img/primes1.png) | ![primes2](img/primes2.png) | ![primes3](img/primes3.png) |
+|-|-|-|
