@@ -32,22 +32,22 @@ def draw_side(x, y, side):
 
     if side in (1, 2, 4, 8, 11, 12, 13, 15): 
         right_enter()
-        if data[x+6, y][0] == 21 and (x+6, y) not in working_stack: 
+        if all(data[x+6, y][:] == BACKGROUND_COLOR) and (x+6, y) not in working_stack: 
             working_stack.append((x+6, y))
 
     if side in (1, 2, 6, 9, 10, 13, 14, 15): 
         left_enter()
-        if data[x-6, y][0] == 21 and (x-6, y) not in working_stack:
+        if all(data[x-6, y][:] == BACKGROUND_COLOR) and (x-6, y) not in working_stack:
             working_stack.append((x-6, y))
     
     if side in (1, 3, 5, 8, 9, 12, 13, 14): 
         up_enter()
-        if data[x, y+6][0] == 21 and (x, y+6) not in working_stack:
+        if all(data[x, y+6][:] == BACKGROUND_COLOR) and (x, y+6) not in working_stack:
             working_stack.append((x, y+6))
     
     if side in (1, 3, 7, 10, 11, 12, 14, 15): 
         down_enter()
-        if data[x, y-6][0] == 21 and (x, y-6) not in working_stack:
+        if all(data[x, y-6][:] == BACKGROUND_COLOR) and (x, y-6) not in working_stack:
             working_stack.append((x, y-6))
 
 # debug: draw all tile samples
@@ -79,20 +79,28 @@ while len(working_stack):
             if side in sides: sides.remove(side)
 
     # right
-    if data[x+6, y][0] != 21 and data[x+4, y][0] == 21: remove_sides(1, 2, 4, 8, 11, 12, 13, 15)
-    elif data[x+6, y][0] != 21 and data[x+4, y][0] != 21: remove_sides(0, 3, 5, 6, 7, 9, 10, 14)
+    if all(data[x+6, y][:] != BACKGROUND_COLOR) and all(data[x+4, y][:] == BACKGROUND_COLOR): 
+        remove_sides(1, 2, 4, 8, 11, 12, 13, 15)
+    elif all(data[x+6, y][:] != BACKGROUND_COLOR) and all(data[x+4, y][:] != BACKGROUND_COLOR): 
+        remove_sides(0, 3, 5, 6, 7, 9, 10, 14)
 
     # left
-    if data[x-6, y][0] != 21 and data[x-4, y][0] == 21: remove_sides(1, 2, 6, 9, 10, 13, 14, 15)
-    elif data[x-6, y][0] != 21 and data[x-4, y][0] != 21: remove_sides(0, 3, 4, 5, 7, 8, 11, 12)
+    if all(data[x-6, y][:] != BACKGROUND_COLOR) and all(data[x-4, y][:] == BACKGROUND_COLOR): 
+        remove_sides(1, 2, 6, 9, 10, 13, 14, 15)
+    elif all(data[x-6, y][:] != BACKGROUND_COLOR) and all(data[x-4, y][:] != BACKGROUND_COLOR): 
+        remove_sides(0, 3, 4, 5, 7, 8, 11, 12)
 
     # up
-    if data[x, y+6][0] != 21 and data[x, y+4][0] == 21: remove_sides(1, 3, 5, 8, 9, 12, 13, 14)
-    elif data[x, y+6][0] != 21 and data[x, y+4][0] != 21: remove_sides(0, 2, 4, 6, 7, 10, 11, 15)
+    if all(data[x, y+6][:] != BACKGROUND_COLOR) and all(data[x, y+4][:] == BACKGROUND_COLOR): 
+        remove_sides(1, 3, 5, 8, 9, 12, 13, 14)
+    elif all(data[x, y+6][:] != BACKGROUND_COLOR) and all(data[x, y+4][:] != BACKGROUND_COLOR): 
+        remove_sides(0, 2, 4, 6, 7, 10, 11, 15)
 
     # down
-    if data[x, y-6][0] != 21 and data[x, y-4][0] == 21: remove_sides(1, 3, 7, 10, 11, 12, 14, 15)
-    elif data[x, y-6][0] != 21 and data[x, y-4][0] != 21: remove_sides(0, 2, 4, 5, 6, 8, 9, 13)
+    if all(data[x, y-6][:] != BACKGROUND_COLOR) and all(data[x, y-4][:] == BACKGROUND_COLOR): 
+        remove_sides(1, 3, 7, 10, 11, 12, 14, 15)
+    elif all(data[x, y-6][:] != BACKGROUND_COLOR) and all(data[x, y-4][:] != BACKGROUND_COLOR): 
+        remove_sides(0, 2, 4, 5, 6, 8, 9, 13)
 
     # add more straight paths (better on huge maps)
     # if 2 in sides: sides.append(2); sides.append(2); sides.append(2)
