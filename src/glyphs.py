@@ -39,7 +39,7 @@ GLYPHS = \
 # GLYPHS = '0123456789'
 # GLYPHS = 'ĆćĈĉĊċČčcC'
 
-data = numpy.zeros((WIDTH, HEIGHT, 3), dtype=numpy.uint8)
+data = numpy.zeros((HEIGHT, WIDTH, 3), dtype=numpy.uint8)
 data[:][:] = BACKGROUND_COLOR
 image = Image.fromarray(data)
 
