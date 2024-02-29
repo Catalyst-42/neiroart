@@ -15,8 +15,7 @@ def setup():
         inputs[current_script][field][2].grid(row=i + 1, column=0, padx=(4, 0), pady=(4, 0))
         inputs[current_script][field][3].grid(row=i + 1, column=1, padx=(0, 4), pady=(4, 0))
         
-        # Setup pretty values in tkinter fileds
-
+        # Setup values in tkinter fileds
         value = inputs[current_script][field][1]            
         inputs[current_script][field][3].insert(0, str(value))
     
@@ -36,7 +35,6 @@ def gen():
     generator = __import__(current_script)
     
     for i, field in enumerate(inputs[current_script].keys()):
-        print(inputs[current_script][field])
         if inputs[current_script][field][0] != 'str':
             inputs[current_script][field][1] = eval(inputs[current_script][field][3].get())  # Argessive
         else:
