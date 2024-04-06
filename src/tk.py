@@ -40,7 +40,6 @@ def gen():
         else:
             inputs[current_script][field][1] = inputs[current_script][field][3].get()
         
-    
     generator.gen()
 
 # Init
