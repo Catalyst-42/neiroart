@@ -4,81 +4,65 @@ from random import choice
 
 import numpy
 
-# MetaFont: https://github.com/Catalyst-42/Fonts/tree/main/MetaFont
+from setup import setup
+from utils import (
+    resolve_glyphs,
+    resolve_color
+)
 
-FONTSIZE = 12
+ARGS = setup("glyphs")
 
-# 12 = one symbol
-WIDTH = 10
-HEIGHT = 10
-
-GLYPHS = "borders"
-BACKGROUND_COLOR = BLACK
-
-RESIZE_TO = (WIDTH * 4 * FONTSIZE, HEIGHT * 4 * FONTSIZE)
-
-sets = {
-    "all": (
-        "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKL"
-        "MNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxy"
-        "z{|}~⌂ ¡¢£¤¥¦§¨©ª«¬-®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆ"
-        "ÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòó"
-        "ôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠ"
-        "ġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌō"
-        "ŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹź"
-        "ŻżŽžſƒơƷǺǻǼǽǾǿȘșȚțɑɸˆˇˉ˘˙˚˛˜˝;΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔ"
-        "ΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρς"
-        "στυφχψωϊϋόύώϐϴЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНО"
-        "ПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъы"
-        "ьэюяѐёђѓєѕіїјљњћќѝўџҐґ־אבגדהוזחטיךכלםמןנסעףפץ"
-        "צקרשתװױײ׳״ᴛᴦᴨẀẁẂẃẄẅẟỲỳ‐‒–—―‗‘’‚‛“”„‟†‡•…‧‰′″‵"
-        "‹›‼‾‿⁀⁄⁔⁴⁵⁶⁷⁸⁹⁺⁻ⁿ₁₂₃₄₅₆₇₈₉₊₋₣₤₧₪€℅ℓ№™Ω℮⅐⅑⅓⅔⅕⅖"
-        "⅗⅘⅙⅚⅛⅜⅝⅞←↑→↓↔↕↨∂∅∆∈∏∑−∕∙√∞∟∩∫≈≠≡≤≥⊙⌀⌂⌐⌠⌡─│┌┐└"
-        "┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬▀▁▄█▌▐░▒▓■"
-        "□▪▫▬▲►▼◄◊○●◘◙◦☺☻☼♀♂♠♣♥♦♪♫✓ﬁﬂ�╪╫"
+# Create canvas
+data = numpy.zeros(
+    (
+        ARGS["image_height"],
+        ARGS["image_width"], 
+        3
     ),
-    "english": (
-        "QWERTYUIOPASDFGHJKLZXCVBNM"
-        "qwertyuiopasdfghjklzxcvbnm"
-        "{};\\/:|<>?/~`[]()*&^%$#@!"
-    ),
-    "borders": (
-        "┌┐└┘"
-    ),
-    "borders-all": (
-        "─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬"
-    ),
-    "brackets": (
-        "[](){}"
-    ),
-    "numbers": (
-        "0123456789"
-    ),
-    "c": (
-        "ĆćĈĉĊċČčcC"
-    ),
-}
-
-if GLYPHS in sets:
-    GLYPHS = sets[GLYPHS]
-
-data = numpy.zeros((HEIGHT * FONTSIZE, WIDTH * FONTSIZE, 3), dtype=numpy.uint8)
-data[:][:] = BACKGROUND_COLOR
+    dtype=numpy.uint8
+)
+data[:][:] = resolve_color(ARGS["background_color"])
 image = Image.fromarray(data)
 
 def random_color(): 
     return RGB[choice(tuple(RGB.keys()))]
 
+# Check font
 draw = ImageDraw.Draw(image)
-for x in range(WIDTH):
-    for y in range(HEIGHT):
+draw.fontmode = "1" if ARGS["font_aliasing"] else "0"
+
+font = None
+try:
+    font = ImageFont.truetype(ARGS["font_name"], ARGS["font_size"])
+except OSError:
+    print(f"Font '{ARGS["font_name"]}' doesn't found, aborting")
+    exit(0)
+
+# Draw glyphs
+for x in range(
+        ARGS["font_margin"],
+        ARGS["image_width"],
+        ARGS["font_size"] + ARGS["font_margin"]
+    ):
+    for y in range(
+            ARGS["font_margin"],
+            ARGS["image_height"],
+            ARGS["font_size"] + ARGS["font_margin"]
+        ):
         draw.text(
-            (x*FONTSIZE + 2, y*FONTSIZE + 2),
-            choice(GLYPHS),
-            font=ImageFont.truetype("fonts/MetaFont.ttf"),
+            xy=(x, y),
+            text=choice(resolve_glyphs(ARGS["glyph_set"])),
+            font=font,
             fill=random_color()
         )
 
-image = image.resize(RESIZE_TO, resample=Image.Resampling.BOX)
+image = image.resize(
+    size=(
+        ARGS["image_width"] * ARGS["image_scale_factor"],
+        ARGS["image_height"] * ARGS["image_scale_factor"]
+    ),
+    resample=Image.Resampling.BOX
+)
+
 image.save('image.png')
 image.show()
