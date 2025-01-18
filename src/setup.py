@@ -57,7 +57,24 @@ def add_argument(argument, parser, ARGS):
                 dest="glyph_set",
             )
 
-# G color; bg color
+        case "glyph_color_set":
+            parser.add_argument(
+                "-gc",
+                help="List of colors for glyphs",
+                default=ARGS["glyph_color_set"],
+                type=str,
+                dest="glyph_color_set",
+                nargs="+"
+            )
+
+        case "background_color":
+            parser.add_argument(
+                "-bg",
+                help="Image background color",
+                default=ARGS["background_color"],
+                type=str,
+                dest="background_color",
+            )
 
         case "image_width":
             parser.add_argument(
@@ -75,6 +92,15 @@ def add_argument(argument, parser, ARGS):
                 default=ARGS["image_height"],
                 type=int,
                 dest="image_height",
+            )
+
+        case "image_scale_factor":
+            parser.add_argument(
+                "-x",
+                help="Final image scale multiplier",
+                default=ARGS["image_scale_factor"],
+                type=int,
+                dest="image_scale_factor",
             )
 
 def setup(script_name):

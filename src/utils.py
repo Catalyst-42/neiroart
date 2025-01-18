@@ -23,23 +23,28 @@ def resolve_glyphs(glyphs):
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             "abcdefghijklmnopqrstuvwxyz"
         ),
+        ":russian": (
+            "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
+            "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+        ),
+        ":greek": (
+            "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρσςτυφχψω"
+        ),
+        ":numbers": (
+            "0123456789"
+        ),
+        ":borders": (
+            "─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬"
+        ),
         ":punctuation": (
             "{};\\/:|<>?/~`[]()*&^%$#@!"
         ),
         ":angles": (
             "┌┐└┘"
         ),
-        ":borders": (
-            "─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬"
-        ),
-        ":brackets": (
-            "[](){}"
-        ),
-        ":numbers": (
-            "0123456789"
-        ),
         ":c": (
-            "ĆćĈĉĊċČčcC"
+            "ĆĈĊČC"
+            "ćĉċčc"
         ),
     }
 
@@ -50,26 +55,30 @@ def resolve_glyphs(glyphs):
 
 
 def resolve_colors(colors):
-    colors_sets = {
-        ":casual": {
-            "red": (255, 99, 132),
-            "orange": (255, 159, 64),
-            "yellow": (255, 205, 86),
-            "green": (75, 192, 192),
-            "blue": (54, 162, 235),
-            "purple": (153, 102, 255),
-            "grey": (201, 203, 207),
-        }
+    color_sets = {
+        ":casual": [
+            (255, 99, 132),
+            (255, 159, 64),
+            (255, 205, 86),
+            (75, 192, 192),
+            (54, 162, 235),
+            (153, 102, 255),
+            (201, 203, 207),
+        ]
     }
 
-    if colors in colors_sets:
-        return colors_sets[colors]
+    if isinstance(colors, str):
+        if colors in color_sets:
+            return color_sets[colors]
 
-    return colors
+        colors = [colors]
 
+    return [
+        resolve_color(color) for color in colors
+    ]
 
 def resolve_color(color):
-    colors_sets = {
+    colors = {
         ":red": (255, 99, 132),
         ":orange": (255, 159, 64),
         ":yellow": (255, 205, 86),
@@ -79,10 +88,16 @@ def resolve_color(color):
         ":grey": (201, 203, 207),
 
         ":white": (255, 255, 255),
-        ":black": (21, 23, 32),
+        ":black": (0, 0, 0),
+        # ":black": (21, 23, 32),
     }
 
-    if color in colors_sets:
-        return colors_sets[color]
+    if color in colors:
+        return colors[color]
 
-    return color
+    elif color.count(',') == 2:
+        return tuple(int(c) for c in color.split(','))
+
+    else:
+        print(f"Color '{color}' not found")
+        exit(0)

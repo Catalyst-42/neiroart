@@ -1,39 +1,41 @@
-from colors import RGB, BLACK
-from PIL import Image, ImageDraw, ImageFont
-from random import choice
+import numpy as np
+from PIL import (
+    Image,
+    ImageDraw,
+    ImageFont
+)
 
-import numpy
+from random import choice
 
 from setup import setup
 from utils import (
     resolve_glyphs,
+    resolve_colors,
     resolve_color
 )
 
 ARGS = setup("glyphs")
 
 # Create canvas
-data = numpy.zeros(
-    (
-        ARGS["image_height"],
-        ARGS["image_width"], 
-        3
-    ),
-    dtype=numpy.uint8
-)
-data[:][:] = resolve_color(ARGS["background_color"])
-image = Image.fromarray(data)
+image = Image.fromarray(np.full(
+    (ARGS["image_height"], ARGS["image_width"], 3),
+    resolve_color(ARGS["background_color"]),
+    np.uint8
+))
 
-def random_color(): 
-    return RGB[choice(tuple(RGB.keys()))]
+colors = resolve_colors(ARGS["glyph_color_set"])
+glyphs = resolve_glyphs(ARGS["glyph_set"])
 
-# Check font
+# Setup font
+font = None
 draw = ImageDraw.Draw(image)
 draw.fontmode = "1" if ARGS["font_aliasing"] else "0"
 
-font = None
 try:
-    font = ImageFont.truetype(ARGS["font_name"], ARGS["font_size"])
+    font = ImageFont.truetype(
+        ARGS["font_name"],
+        ARGS["font_size"]
+    )
 except OSError:
     print(f"Font '{ARGS["font_name"]}' doesn't found, aborting")
     exit(0)
@@ -51,9 +53,9 @@ for x in range(
         ):
         draw.text(
             xy=(x, y),
-            text=choice(resolve_glyphs(ARGS["glyph_set"])),
+            text=choice(glyphs),
             font=font,
-            fill=random_color()
+            fill=choice(colors)
         )
 
 image = image.resize(

@@ -4,9 +4,9 @@ font_margin = 2                   # -fm <int>
 font_name = "fonts/Metafont.ttf"  # -fn <str>
 font_aliasing = true              # -fa
 
-glyph_set = ":borders"       # -g <glyphset | str>
-glyph_colors = ":casual"     # -gc <colorset | list>
-background_color = ":black"  # -bg <color>
+glyph_set = ":borders"       # -g  <glyphset | str>
+glyph_color_set = ":casual"  # -gc <colorset> | <color> [<color> ...]
+background_color = ":red"    # -bg <color>
 
 image_width = 156       # -w <int>
 image_height = 156      # -h <int>
