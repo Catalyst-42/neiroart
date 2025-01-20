@@ -8,23 +8,19 @@ from PIL import (
 from random import choice
 
 from setup import setup
-from utils import (
-    resolve_glyphs,
-    resolve_colors,
-    resolve_color
-)
 
 ARGS = setup("glyphs")
 
 # Create canvas
 image = Image.fromarray(np.full(
     (ARGS["image_height"], ARGS["image_width"], 3),
-    resolve_color(ARGS["background_color"]),
+    ARGS["background_color"],
     np.uint8
 ))
 
-colors = resolve_colors(ARGS["glyph_color_set"])
-glyphs = resolve_glyphs(ARGS["glyph_set"])
+colors = ARGS["glyph_color_set"]
+print("COLOR:", colors)
+glyphs = ARGS["glyph_set"]
 
 # Setup font
 font = None
@@ -66,5 +62,8 @@ image = image.resize(
     resample=Image.Resampling.BOX
 )
 
-image.save('image.png')
-image.show()
+if ARGS["output"]:
+    image.save(ARGS["output"])
+
+if not ARGS["quiet"] or not ARGS["output"]:
+    image.show()

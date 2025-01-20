@@ -1,4 +1,15 @@
-def resolve_glyphs(glyphs):
+import random
+import time
+import re
+
+
+def false_or_filename(value):
+    if isinstance(value, bool) and value == False:
+        return False
+    return str(value)
+
+
+def glyphset(value):
     glyph_sets = {
         ":all": (
             "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKL"
@@ -48,15 +59,15 @@ def resolve_glyphs(glyphs):
         ),
     }
 
-    if glyphs in glyph_sets:
-        return glyph_sets[glyphs]
+    if value in glyph_sets:
+        return glyph_sets[value]
 
-    return glyphs
+    return value
 
 
-def resolve_colors(colors):
+def colorset(value):
     color_sets = {
-        ":casual": [
+        ":casual": (
             (255, 99, 132),
             (255, 159, 64),
             (255, 205, 86),
@@ -64,20 +75,28 @@ def resolve_colors(colors):
             (54, 162, 235),
             (153, 102, 255),
             (201, 203, 207),
-        ]
+        ),
+        ":grayscale": (
+            tuple((c, c, c) for c in range(0, 256, 32))
+        ),
     }
 
-    if isinstance(colors, str):
-        if colors in color_sets:
-            return color_sets[colors]
+    if isinstance(value, str):
+        value = [value]
 
-        colors = [colors]
+    # Resolve colorsets or single colors
+    colors = []
 
-    return [
-        resolve_color(color) for color in colors
-    ]
+    for c in value:
+        if c in color_sets:
+            colors.extend(color_sets[c])
+        else:
+            colors.append(color(c))
 
-def resolve_color(color):
+    return colors
+
+
+def color(value):
     colors = {
         ":red": (255, 99, 132),
         ":orange": (255, 159, 64),
@@ -89,15 +108,43 @@ def resolve_color(color):
 
         ":white": (255, 255, 255),
         ":black": (0, 0, 0),
-        # ":black": (21, 23, 32),
+        ":black": (21, 23, 32),
     }
 
-    if color in colors:
-        return colors[color]
+    # The :color format
+    if value in colors:
+        return colors[value]
 
-    elif color.count(',') == 2:
-        return tuple(int(c) for c in color.split(','))
+    # Comma separated color format
+    elif re.match(r"(?:\d{1,3},){2}\d{1,3}", value):
+        return tuple(
+            int(c) for c in value.split(',')
+        )
+
+    # Hex color format
+    elif re.match(r"#(?:[0-9A-Fa-f]{3}){1,2}", value):
+        value = value[1:]  # Remove # sign
+
+        if len(value) == 3:  # Parse #rgb type color
+            value = tuple(
+                int(c * 2, 16) for c in value
+            )
+
+        elif len(value) == 6:  # Parse #rrggbb type color
+            value = tuple(
+                int(c, 16) for c in (
+                    value[:2], value[2:4], value[-2:]
+            ))
+
+        return value
 
     else:
-        print(f"Color '{color}' not found")
+        print(f"Color '{value}' not found")
         exit(0)
+
+
+def seed(value):
+    value = time.time() if value == "random" else value
+    random.seed(value)
+
+    return value

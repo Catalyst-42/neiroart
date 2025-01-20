@@ -1,7 +1,9 @@
+import argtypes
+
 import argparse
 import tomllib
 
-def add_argument(argument, parser, ARGS):
+def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
     match argument:
         case "help":
             parser.add_argument(
@@ -53,7 +55,7 @@ def add_argument(argument, parser, ARGS):
                 "-g",
                 help="List of symbols that will make up the image",
                 default=ARGS["glyph_set"],
-                type=str,
+                type=argtypes.glyphset,
                 dest="glyph_set",
             )
 
@@ -72,7 +74,7 @@ def add_argument(argument, parser, ARGS):
                 "-bg",
                 help="Image background color",
                 default=ARGS["background_color"],
-                type=str,
+                type=argtypes.color,
                 dest="background_color",
             )
 
@@ -103,9 +105,37 @@ def add_argument(argument, parser, ARGS):
                 dest="image_scale_factor",
             )
 
+        case "seed":
+            parser.add_argument(
+                "-s",
+                help="Seed for random number generator. Can be 'random' or any other string to lock the seed",
+                default=ARGS["seed"],
+                type=argtypes.seed,
+                dest="seed",
+            )
+
+        case "output":
+            parser.add_argument(
+                "-o",
+                help="Output image, must be with image type extension such as .png, .jpeg or other",
+                default=ARGS["output"],
+                type=argtypes.false_or_filename, # type=argparse.FileType('w')
+                dest="output",
+            )
+
+        case "quiet":
+            parser.add_argument(
+                "-q",
+                help="Do not show result image. Disabled if no output image specified",
+                action="store_const",
+                const=not ARGS["quiet"],
+                default=ARGS["quiet"],
+                dest="quiet",
+            )
+
 def setup(script_name):
     settings = tomllib.load(open("settings.toml", "rb"))
-    ARGS = settings[script_name]
+    ARGS = settings["global"] | settings[script_name]
 
     # Parse arguments
     parser = argparse.ArgumentParser(add_help=False)
@@ -118,5 +148,8 @@ def setup(script_name):
     for arg in parsed_args:
         ARGS[arg] = parsed_args[arg]
 
-    # print(ARGS)
+    # Flatten nargs+ types
+    if "glyph_color_set" in ARGS:
+        ARGS["glyph_color_set"] = argtypes.colorset(ARGS["glyph_color_set"])
+
     return ARGS
