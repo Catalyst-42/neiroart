@@ -13,6 +13,43 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
             help="Show all script startup parameters and exit"
         )
 
+        case "seed":
+            parser.add_argument(
+                "-s",
+                help="Seed for random number generator. Can be 'random' or any other string to lock the seed",
+                default=ARGS["seed"],
+                type=argtypes.seed,
+                dest="seed",
+            )
+
+        case "quiet":
+            parser.add_argument(
+                "-q",
+                help="Do not show result image. Disabled if no output image specified",
+                action="store_const",
+                const=not ARGS["quiet"],
+                default=ARGS["quiet"],
+                dest="quiet",
+            )
+
+        case "output":
+            parser.add_argument(
+                "-o",
+                help="Output image, must be with image extension such as .png, .jpeg, .bmp or other",
+                default=ARGS["output"],
+                type=str,
+                dest="output",
+            )
+
+        case "font_name":
+            parser.add_argument(
+                "-fn",
+                help="Set up font by given name",
+                default=ARGS["font_name"],
+                type=str,
+                dest="font_name",
+            )
+
         case "font_size":
             parser.add_argument(
                 "-fs",
@@ -29,15 +66,6 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
                 default=ARGS["font_margin"],
                 type=int,
                 dest="font_margin",
-            )
-
-        case "font_name":
-            parser.add_argument(
-                "-fn",
-                help="Set up font by given name",
-                default=ARGS["font_name"],
-                type=str,
-                dest="font_name",
             )
 
         case "font_aliasing":
@@ -83,7 +111,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
                 "-w",
                 help="List of symbols that will make up the image",
                 default=ARGS["image_width"],
-                type=int,
+                type=argtypes.dimension,
                 dest="image_width",
             )
 
@@ -92,7 +120,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
                 "-h",
                 help="List of symbols that will make up the image",
                 default=ARGS["image_height"],
-                type=int,
+                type=argtypes.dimension,
                 dest="image_height",
             )
 
@@ -105,40 +133,15 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
                 dest="image_scale_factor",
             )
 
-        case "seed":
-            parser.add_argument(
-                "-s",
-                help="Seed for random number generator. Can be 'random' or any other string to lock the seed",
-                default=ARGS["seed"],
-                type=argtypes.seed,
-                dest="seed",
-            )
-
-        case "output":
-            parser.add_argument(
-                "-o",
-                help="Output image, must be with image type extension such as .png, .jpeg or other",
-                default=ARGS["output"],
-                type=argtypes.false_or_filename, # type=argparse.FileType('w')
-                dest="output",
-            )
-
-        case "quiet":
-            parser.add_argument(
-                "-q",
-                help="Do not show result image. Disabled if no output image specified",
-                action="store_const",
-                const=not ARGS["quiet"],
-                default=ARGS["quiet"],
-                dest="quiet",
-            )
-
 def setup(script_name):
     settings = tomllib.load(open("settings.toml", "rb"))
     ARGS = settings["global"] | settings[script_name]
 
     # Parse arguments
-    parser = argparse.ArgumentParser(add_help=False)
+    parser = argparse.ArgumentParser(
+        prog=script_name,
+        add_help=False
+    )
     add_argument("help", parser, ARGS)
 
     for argument in ARGS:
@@ -150,6 +153,8 @@ def setup(script_name):
 
     # Flatten nargs+ types
     if "glyph_color_set" in ARGS:
-        ARGS["glyph_color_set"] = argtypes.colorset(ARGS["glyph_color_set"])
+        ARGS["glyph_color_set"] = argtypes.colorset(
+            ARGS["glyph_color_set"]
+        )
 
     return ARGS

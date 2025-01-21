@@ -19,14 +19,13 @@ image = Image.fromarray(np.full(
 ))
 
 colors = ARGS["glyph_color_set"]
-print("COLOR:", colors)
 glyphs = ARGS["glyph_set"]
 
 # Setup font
-font = None
 draw = ImageDraw.Draw(image)
 draw.fontmode = "1" if ARGS["font_aliasing"] else "0"
 
+font = None
 try:
     font = ImageFont.truetype(
         ARGS["font_name"],
@@ -63,7 +62,11 @@ image = image.resize(
 )
 
 if ARGS["output"]:
-    image.save(ARGS["output"])
+    try:
+        image.save(ARGS["output"])
+    except ValueError:
+        print(f"Unknown file extension for '{ARGS["output"]}'")
+        exit(0)
 
 if not ARGS["quiet"] or not ARGS["output"]:
     image.show()

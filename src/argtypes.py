@@ -1,3 +1,5 @@
+import argparse
+
 import random
 import time
 import re
@@ -138,13 +140,24 @@ def color(value):
 
         return value
 
-    else:
-        print(f"Color '{value}' not found")
-        exit(0)
+    raise argparse.ArgumentTypeError(
+        f"Color '{value}' not found"
+    )
 
 
 def seed(value):
     value = time.time() if value == "random" else value
-    random.seed(value)
+    random.seed(value)  # Set seed
+
+    return value
+
+
+def dimension(value: str):
+    value = int(value)
+
+    if not value > 0:
+        raise argparse.ArgumentTypeError(
+            "Image dimensions must be greater than 0"
+        )
 
     return value
