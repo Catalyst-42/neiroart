@@ -20,9 +20,6 @@ x = randint(0, 30) * 16
 face = faces.crop((x, 0, x + 16, 16))
 image.paste(face, (0, 0), face)
 
-red = (227, 81, 0)
-blue = (97, 162, 255)
-
 # Hp bar
 max_hp = randint(10, 100)
 hp = max_hp - randint(1, max_hp - 1)
@@ -102,12 +99,12 @@ image = image.resize(
 )
 
 # Display image and save it
-if ARGS["output"]:
+if ARGS['output']:
     try:
-        image.save(ARGS["output"])
+        image.save(ARGS['output'])
     except ValueError:
         print(f"Unknown file extension for '{ARGS["output"]}'")
         exit(0)
 
-if not ARGS["quiet"] or not ARGS["output"]:
+if not ARGS['quiet'] or not ARGS['output']:
     image.show()
