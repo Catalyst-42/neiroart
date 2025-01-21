@@ -61,6 +61,7 @@ image = image.resize(
     resample=Image.Resampling.BOX
 )
 
+# Display image and save it
 if ARGS["output"]:
     try:
         image.save(ARGS["output"])

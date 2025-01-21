@@ -16,3 +16,6 @@ background_color = ":black"  # -bg <color>
 image_width = 156       # -w <int>
 image_height = 156      # -h <int>
 image_scale_factor = 4  # -x <int>
+
+[enemies]
+image_scale_factor = 6  # -x <int>
