@@ -3,13 +3,18 @@ from PIL import (
     ImageDraw
 )
 
+from math import floor
 from random import (
     randint,
-    sample)
-
-from math import floor
+    sample
+)
 
 from setup import setup
+from utils import (
+    resize,
+    show_and_save,
+    limit_or_random
+)
 
 ARGS = setup('enemies')
 
@@ -20,12 +25,7 @@ faces = Image.open('img/enemies/faces.png').convert('RGBA')
 numbers = Image.open('img/enemies/numbers.png').convert('RGBA')
 effects = Image.open('img/enemies/effects.png').convert('RGBA')
 
-def limit_or_random(value, min_value, max_value):
-    if isinstance(value, int):
-        return min(max(min_value, value), max_value)
-    return randint(min_value, max_value)
-
-face = limit_or_random(ARGS['face'], 0, 30) * 16
+face = (limit_or_random(ARGS['face'], 1, 31) - 1) * 16
 face = faces.crop((face, 0, face + 16, 16))
 image.paste(face, (0, 0), face)
 
@@ -98,21 +98,10 @@ for i in effects_str:
     image.paste(glyph, (x, y), glyph)
     x += 5
 
-image = image.resize(
-    size=(
-        48 * ARGS['image_scale_factor'],
-        24 * ARGS['image_scale_factor']
-    ),
-    resample=Image.Resampling.BOX
+image = resize(
+    image,
+    48 * ARGS['image_scale_factor'],
+    24 * ARGS['image_scale_factor']
 )
 
-# Display image and save it
-if ARGS['output']:
-    try:
-        image.save(ARGS['output'])
-    except ValueError:
-        print(f"Unknown file extension for '{ARGS["output"]}'")
-        exit(0)
-
-if not ARGS['quiet'] or not ARGS['output']:
-    image.show()
+show_and_save(image, ARGS['output'], ARGS['quiet'])

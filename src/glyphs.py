@@ -8,6 +8,10 @@ from PIL import (
 from random import choice
 
 from setup import setup
+from utils import (
+    resize,
+    show_and_save
+)
 
 ARGS = setup('glyphs')
 
@@ -53,21 +57,10 @@ for x in range(
             fill=choice(colors)
         )
 
-image = image.resize(
-    size=(
-        ARGS['image_width'] * ARGS['image_scale_factor'],
-        ARGS['image_height'] * ARGS['image_scale_factor']
-    ),
-    resample=Image.Resampling.BOX
+image = resize(
+    image,
+    ARGS['image_width'] * ARGS['image_scale_factor'],
+    ARGS['image_height'] * ARGS['image_scale_factor']
 )
 
-# Display image and save it
-if ARGS['output']:
-    try:
-        image.save(ARGS['output'])
-    except ValueError:
-        print(f"Unknown file extension for '{ARGS['output']}'")
-        exit(0)
-
-if not ARGS['quiet'] or not ARGS['output']:
-    image.show()
+show_and_save(image, ARGS['output'], ARGS['quiet'])

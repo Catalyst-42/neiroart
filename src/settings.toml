@@ -18,7 +18,7 @@ image_height = 156      # -h <int>
 image_scale_factor = 4  # -x <int>
 
 [enemies]
-face = 'random'      # -f <int: 0-30>
+face = 'random'      # -f <int: 1-31>
 level = 'random'     # -l <int: 1-99>
 hp = 'random'        # -hp <int: 0-999>
 max_hp = 'random'    # -mhp <int: 1-999>
@@ -32,18 +32,19 @@ image_scale_factor = 8  # -x <int>
 background = 'random'        # -bg <int: 1-5>
 background_color = 'random'  # -bgc <int: 1-18>
 skin_color = 'random'        # -sc <int: 1-12>
-cloth = 'random'             # -c <int: 1-12>
-tidbit = 'random'            # -t <int: 1-14>
+cloth = 'random'             # -c <int: 0-12>
+tidbit = 'random'            # -t <int: 0-14>
 tidbit_color = 'random'      # -tc <int: 1-18>
-accessor = 'random'          # -a <int: 1-16>
+accessory = 'random'         # -a <int: 0-16>
 accessory_color = 'random'   # -ac <int: 1-18>
-mustache = 'random'          # -m <int: 1-24>
+mustache = 'random'          # -m <int: 0-24>
 mustache_color = 'random'    # -mc <int: 1-18>
-hair = 'random'              # -h <int: 1-16>
+hair = 'random'              # -h <int: 0-16>
 hair_color = 'random'        # -hc <int: 1-18>
-eyewear = 'random'           # -e <int: 1-16>
+eyewear = 'random'           # -e <int: 0-16>
 eyewear_color = 'random'     # -ec <int: 1-18>
-hat = 'random'               # -hat <int: 1-14>
-hat_color = 'random'         # -hc <int: 1-18>
+hat = 'random'               # -hat <int: 0-14>
+hat_color = 'random'         # -hatc <int: 1-18>
 
 image_scale_factor = 4  # -x <int>
+
