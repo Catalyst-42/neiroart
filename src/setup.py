@@ -3,7 +3,7 @@ import argtypes
 import argparse
 import tomllib
 
-def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
+def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
     match argument:
         # Helper arguments
         case 'help':
@@ -105,7 +105,11 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
                 '-bg',
                 help='Image background color',
                 default=ARGS['background_color'],
-                type=argtypes.color,
+                type=(
+                    argtypes.color
+                    if script_name != "zombatars" else
+                    argtypes.none_or_int
+                ),
                 dest='background_color',
             )
 
@@ -219,10 +223,9 @@ def setup(script_name):
         prog=script_name,
         add_help=False
     )
-    add_argument('help', parser, ARGS)
 
-    for argument in ARGS:
-        add_argument(argument, parser, ARGS)
+    for argument in ('help', *tuple(ARGS.keys())):
+        add_argument(argument, parser, ARGS, script_name)
 
     parsed_args = dict(parser.parse_args()._get_kwargs())
     for arg in parsed_args:

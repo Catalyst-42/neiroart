@@ -3,8 +3,9 @@ from random import randint
 from PIL import Image
 
 import numpy as np
+from setup import setup
 
-RESIZE_TO = (512, 512)
+ARGS = setup('zombatars')
 
 '''
 Элемент    | Варианты с цветами      | Уникальные варианты
@@ -47,13 +48,13 @@ def shift():
         for y in range(width):
             data[x][y][0] = np.array(round(color[0]*256/360))
             data[x][y][1] = np.array(round(color[1]*256/100))
-            
+
             if data[x][y][2] >= np.array(-round(color[2]*256/100)):
                 data[x][y][2] += np.array(round(color[2]*256/100))
 
             elif data[x][y][2] > np.array(8*256/100):
                 data[x][y][2] = np.array(0)
-            
+
 # pic bg
 image = Image.open(f'img/zombatar/backgrounds/{background_id}.png')
 if background_id == 1 and background_color != 1:
@@ -194,6 +195,22 @@ seed += f'{eyewear_id}({eyewear_color})-{hat_id}({hat_color})'
 print('seed:', seed)
 
 image = image.convert('RGB')
-image = image.resize(RESIZE_TO, resample=Image.Resampling.BOX)
-image.save(f'image.png')
-image.show()
+
+image = image.resize(
+    size=(
+        180 * ARGS['image_scale_factor'],
+        180 * ARGS['image_scale_factor']
+    ),
+    resample=Image.Resampling.BOX
+)
+
+# Display image and save it
+if ARGS['output']:
+    try:
+        image.save(ARGS['output'])
+    except ValueError:
+        print(f"Unknown file extension for '{ARGS['output']}'")
+        exit(0)
+
+if not ARGS['quiet'] or not ARGS['output']:
+    image.show()

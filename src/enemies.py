@@ -3,7 +3,10 @@ from PIL import (
     ImageDraw
 )
 
-from random import randint, sample
+from random import (
+    randint,
+    sample)
+
 from math import floor
 
 from setup import setup

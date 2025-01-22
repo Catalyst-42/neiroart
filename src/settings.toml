@@ -28,7 +28,7 @@ effects = 'random'   # -e <str: 0-5>
 
 image_scale_factor = 8  # -x <int>
 
-[zombatar]
+[zombatars]
 background = 'random'        # -bg <int: 1-5>
 background_color = 'random'  # -bgc <int: 1-18>
 skin_color = 'random'        # -sc <int: 1-12>
@@ -45,3 +45,5 @@ eyewear = 'random'           # -e <int: 1-16>
 eyewear_color = 'random'     # -ec <int: 1-18>
 hat = 'random'               # -hat <int: 1-14>
 hat_color = 'random'         # -hc <int: 1-18>
+
+image_scale_factor = 4  # -x <int>
