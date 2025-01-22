@@ -5,12 +5,6 @@ import time
 import re
 
 
-def false_or_filename(value):
-    if isinstance(value, bool) and value == False:
-        return False
-    return str(value)
-
-
 def glyphset(value):
     glyph_sets = {
         ':all': (
@@ -161,3 +155,27 @@ def dimension(value: str):
         )
 
     return value
+
+
+def none_or_int(value: str):
+    if value.isnumeric():
+        return int(value)
+
+    elif value == 'random':
+        return None
+
+    raise argparse.ArgumentTypeError(
+        "Value must be a number or 'random'"
+    )
+
+
+def effects(value):
+    if re.match(r"[0-5]+", value):
+        return value[:6]
+
+    elif value == 'random':
+        return None
+    
+    raise argparse.ArgumentTypeError(
+        "Value must be numeric string or 'random'"
+    )

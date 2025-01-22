@@ -5,6 +5,7 @@ import tomllib
 
 def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
     match argument:
+        # Helper arguments
         case 'help':
             parser.add_argument(
             '-help',
@@ -13,6 +14,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
             help='Show all script startup parameters and exit'
         )
 
+        # Global arguments
         case 'seed':
             parser.add_argument(
                 '-s', '-seed',
@@ -41,6 +43,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
                 dest='output',
             )
 
+        # Glyphs
         case 'font_name':
             parser.add_argument(
                 '-fn',
@@ -133,6 +136,80 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS):
                 dest='image_scale_factor',
             )
 
+        # Enemies
+        case 'face':
+            parser.add_argument(
+                '-f',
+                metavar='FACE: 0-30',
+                help='Enemy face icon',
+                default=ARGS['face'],
+                type=argtypes.none_or_int,
+                dest='face',
+            )
+
+        case 'level':
+            parser.add_argument(
+                '-l',
+                metavar='LEVEL: 0-99',
+                help='Enemy level',
+                default=ARGS['level'],
+                type=argtypes.none_or_int,
+                dest='level',
+            )
+
+        case 'hp':
+            parser.add_argument(
+                '-hp',
+                metavar='HP: 1-999',
+                help='Enemy current hp',
+                default=ARGS['hp'],
+                type=argtypes.none_or_int,
+                dest='hp',
+            )
+
+        case 'max_hp':
+            parser.add_argument(
+                '-mhp',
+                metavar='MAX_HP: 1-909',
+                help='Enemy max hp',
+                default=ARGS['max_hp'],
+                type=argtypes.none_or_int,
+                dest='max_hp',
+            )
+
+        case 'mana':
+            parser.add_argument(
+                '-m',
+                metavar='MANA: 0-999',
+                help='Enemy current mana',
+                default=ARGS['mana'],
+                type=argtypes.none_or_int,
+                dest='mana',
+            )
+
+        case 'max_mana':
+            parser.add_argument(
+                '-mm',
+                metavar='MAX_MANA: 1-999',
+                help='Enemy max mana',
+                default=ARGS['max_mana'],
+                type=argtypes.none_or_int,
+                dest='max_mana',
+            )
+
+        case 'effects':
+            parser.add_argument(
+                '-e',
+                metavar="EFFECTS 0-5",
+                help='List of enemy effects by indexes',
+                default=ARGS['effects'],
+                type=argtypes.effects,
+                dest='effects',
+            )
+
+        # Zombatars
+
+
 def setup(script_name):
     settings = tomllib.load(open('settings.toml', 'rb'))
     ARGS = settings['global'] | settings[script_name]
@@ -157,4 +234,5 @@ def setup(script_name):
             ARGS['glyph_color_set']
         )
 
+    # print(ARGS)
     return ARGS

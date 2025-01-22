@@ -1,21 +1,47 @@
 [global]
-seed = "random"  # -s <str>
+seed = 'random'  # -s <str>
 quiet = false    # -q
 output = false   # -o <filename>
 
 [glyphs]
-font_name = "fonts/Metafont.ttf"  # -fn <str>
+font_name = 'fonts/Metafont.ttf'  # -fn <str>
 font_size = 10                    # -fs <int>
 font_margin = 2                   # -fm <int>
 font_aliasing = true              # -fa
 
-glyph_set = ":borders"       # -g  <glyphset | str>
-glyph_color_set = ":casual"  # -gc <colorset> | <color> [<color> ...]
-background_color = ":black"  # -bg <color>
+glyph_set = ':borders'       # -g  <glyphset | str>
+glyph_color_set = ':casual'  # -gc <colorset> | <color> [<color> ...]
+background_color = ':black'  # -bg <color: r,g,b | #rrggbb | #rgb>
 
 image_width = 156       # -w <int>
 image_height = 156      # -h <int>
 image_scale_factor = 4  # -x <int>
 
 [enemies]
-image_scale_factor = 6  # -x <int>
+face = 'random'      # -f <int: 0-30>
+level = 'random'     # -l <int: 1-99>
+hp = 'random'        # -hp <int: 0-999>
+max_hp = 'random'    # -mhp <int: 1-999>
+mana = 'random'      # -m <int: 0-999>
+max_mana = 'random'  # -mm <int: 1-999>
+effects = 'random'   # -e <str: 0-5>
+
+image_scale_factor = 8  # -x <int>
+
+[zombatar]
+background = 'random'        # -bg <int: 1-5>
+background_color = 'random'  # -bgc <int: 1-18>
+skin_color = 'random'        # -sc <int: 1-12>
+cloth = 'random'             # -c <int: 1-12>
+tidbit = 'random'            # -t <int: 1-14>
+tidbit_color = 'random'      # -tc <int: 1-18>
+accessor = 'random'          # -a <int: 1-16>
+accessory_color = 'random'   # -ac <int: 1-18>
+mustache = 'random'          # -m <int: 1-24>
+mustache_color = 'random'    # -mc <int: 1-18>
+hair = 'random'              # -h <int: 1-16>
+hair_color = 'random'        # -hc <int: 1-18>
+eyewear = 'random'           # -e <int: 1-16>
+eyewear_color = 'random'     # -ec <int: 1-18>
+hat = 'random'               # -hat <int: 1-14>
+hat_color = 'random'         # -hc <int: 1-18>
