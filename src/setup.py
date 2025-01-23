@@ -200,7 +200,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
         case 'effects':
             parser.add_argument(
                 '-e',
-                metavar="EFFECTS: 0-5",
+                metavar="EFFECTS: 1-6",
                 help='List of enemy effects by indexes',
                 default=ARGS['effects'],
                 type=argtypes.effects,
@@ -212,7 +212,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
             parser.add_argument(
                 '-bg',
                 metavar='BACKGROUND: 1-5',
-                help='',
+                help='Type of image background',
                 default=ARGS['background'],
                 type=argtypes.none_or_int,
                 dest='background',
@@ -221,20 +221,23 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
         case 'background_color':
             parser.add_argument(
                 '-bgc',
-                metavar='BACKGROUND_COLOR: 1-18',
-                help='',
+                metavar='BACKGROUND_COLOR: 1-18 | BRIGHT_COLOR',
+                help=(
+                    'Background color index '
+                    'for background of 1 type'
+                ),
                 default=ARGS['background_color'],
-                type=argtypes.none_or_int,
+                type=argtypes.zombatar_bright_color,
                 dest='background_color',
             )
 
         case 'skin_color':
             parser.add_argument(
                 '-sc',
-                metavar='SKIN_COLOR: 1-12',
-                help='',
+                metavar='SKIN_COLOR: 1-12 | SKIN_COLOR',
+                help='Zombie skin color index',
                 default=ARGS['skin_color'],
-                type=argtypes.none_or_int,
+                type=argtypes.zombatar_skin_color,
                 dest='skin_color',
             )
 
@@ -242,7 +245,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
             parser.add_argument(
                 '-c',
                 metavar='CLOTH: 0-12',
-                help='',
+                help='Zombie cloth element',
                 default=ARGS['cloth'],
                 type=argtypes.none_or_int,
                 dest='cloth',
@@ -252,7 +255,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
             parser.add_argument(
                 '-t',
                 metavar='TIDBIT: 0-14',
-                help='',
+                help='Zombie tidbit element',
                 default=ARGS['tidbit'],
                 type=argtypes.none_or_int,
                 dest='tidbit',
@@ -261,10 +264,13 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
         case 'tidbit_color':
             parser.add_argument(
                 '-tc',
-                metavar='TIDBIT_COLOR: 1-18',
-                help='',
+                metavar='TIDBIT_COLOR: 1-18 | BRIGHT_COLOR',
+                help=(
+                    'Color index of tidbit for '
+                    '2, 3, 10, 11 and 12 type of them'
+                ),
                 default=ARGS['tidbit_color'],
-                type=argtypes.none_or_int,
+                type=argtypes.zombatar_bright_color,
                 dest='tidbit_color',
             )
 
@@ -272,7 +278,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
             parser.add_argument(
                 '-a',
                 metavar='ACCESSORY: 0-16',
-                help='',
+                help='Zombie accessory element',
                 default=ARGS['accessory'],
                 type=argtypes.none_or_int,
                 dest='accessory',
@@ -281,10 +287,13 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
         case 'accessory_color':
             parser.add_argument(
                 '-ac',
-                metavar='ACCESSORY_COLOR: 1-18',
-                help='',
+                metavar='ACCESSORY_COLOR: 1-18 | BRIGHT_COLOR',
+                help=(
+                    'Color index of accessory for '
+                    '9, 11, 13 and 14 types of them'
+                ),
                 default=ARGS['accessory_color'],
-                type=argtypes.none_or_int,
+                type=argtypes.zombatar_bright_color,
                 dest='accessory_color',
             )
 
@@ -292,7 +301,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
             parser.add_argument(
                 '-m',
                 metavar='MUSTACHE: 0-24',
-                help='',
+                help='Zombie mustache element',
                 default=ARGS['mustache'],
                 type=argtypes.none_or_int,
                 dest='mustache',
@@ -301,10 +310,10 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
         case 'mustache_color':
             parser.add_argument(
                 '-mc',
-                metavar='MUSTACHE_COLOR: 1-18',
-                help='',
+                metavar='MUSTACHE_COLOR: 1-18 | COMMON_COLOR',
+                help='Zombie mustache color index',
                 default=ARGS['mustache_color'],
-                type=argtypes.none_or_int,
+                type=argtypes.zombatar_common_color,
                 dest='mustache_color',
             )
 
@@ -312,7 +321,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
             parser.add_argument(
                 '-h',
                 metavar='HAIR: 0-16',
-                help='',
+                help='Zombie hair element',
                 default=ARGS['hair'],
                 type=argtypes.none_or_int,
                 dest='hair',
@@ -321,10 +330,10 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
         case 'hair_color':
             parser.add_argument(
                 '-hc',
-                metavar='HAIR_COLOR: 1-18',
-                help='',
+                metavar='HAIR_COLOR: 1-18 | COMMON_COLOR',
+                help='Zombie hair color index',
                 default=ARGS['hair_color'],
-                type=argtypes.none_or_int,
+                type=argtypes.zombatar_common_color,
                 dest='hair_color',
             )
 
@@ -332,7 +341,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
             parser.add_argument(
                 '-e',
                 metavar='EYEWEAR: 0-16',
-                help='',
+                help='Zombie eyewear element',
                 default=ARGS['eyewear'],
                 type=argtypes.none_or_int,
                 dest='eyewear',
@@ -341,10 +350,13 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
         case 'eyewear_color':
             parser.add_argument(
                 '-ec',
-                metavar='EYEWEAR_COLOR: 1-18',
-                help='',
+                metavar='EYEWEAR_COLOR: 1-18 | BRIGHT_COLOR',
+                help=(
+                    'Color index of eyewear which eyewear '
+                    'type is less than 13'
+                ),
                 default=ARGS['eyewear_color'],
-                type=argtypes.none_or_int,
+                type=argtypes.zombatar_bright_color,
                 dest='eyewear_color',
             )
 
@@ -352,7 +364,7 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
             parser.add_argument(
                 '-hat',
                 metavar='HAT: 0-14',
-                help='',
+                help='Zombie hat element',
                 default=ARGS['hat'],
                 type=argtypes.none_or_int,
                 dest='hat',
@@ -361,10 +373,10 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
         case 'hat_color':
             parser.add_argument(
                 '-hatc',
-                metavar='HAT_COLOR: 1-18',
-                help='',
+                metavar='HAT_COLOR: 1-18 | BRIGHT_COLOR',
+                help='Color index of hat if it\'s not 13 type',
                 default=ARGS['hat_color'],
-                type=argtypes.none_or_int,
+                type=argtypes.zombatar_bright_color,
                 dest='hat_color',
             )
 

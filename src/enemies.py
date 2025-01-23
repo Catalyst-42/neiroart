@@ -89,12 +89,12 @@ for i in level_text:
 # Additional effects
 x, y = 10, 18
 effects_str = ARGS['effects'] or (
-    sample(list('012345'), randint(0, 6))
+    sample(list('123456'), randint(0, 6))
 )
 
 # Display icons of effects
 for i in effects_str:
-    glyph = effects.crop((int(i)*4, 0, int(i)*4 + 4, 4))
+    glyph = effects.crop((int(i)*4 - 4, 0, int(i)*4, 4))
     image.paste(glyph, (x, y), glyph)
     x += 5
 

@@ -5,6 +5,7 @@ import random
 
 def limit_or_random(value, min_value, max_value):
     if isinstance(value, int):
+        random.randint(min_value, max_value)  # Normalize random
         return min(max(min_value, value), max_value)
     return random.randint(min_value, max_value)
 
