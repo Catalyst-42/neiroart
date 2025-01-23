@@ -3,25 +3,96 @@ import tomllib
 
 import argtypes
 
-def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
+def add_argument(argument, parser, ARGS, script_name):
     match argument:
         # Helper arguments
         case 'help':
             parser.add_argument(
-            '-help',
+            '-help', '--help',
             action='help',
             default=argparse.SUPPRESS,
             help='Show all script startup parameters and exit'
         )
 
+        case 'show_glyphsets':
+            parser.add_argument(
+                '--show-glyphsets',
+                help=(
+                    'Show list of all available glyphs '
+                    'aliases with values'
+                ),
+                action='store_true',
+            )
+
+        case 'show_colors':
+            parser.add_argument(
+                '--show-colors',
+                help=(
+                    'Show list of all available color '
+                    'aliases with values'
+                ),
+                action='store_true',
+            )
+
+        case 'show_colorsets':
+            parser.add_argument(
+                '--show-colorsets',
+                help=(
+                    'Show list of all available colorsets '
+                    'aliases with values'
+                ),
+                action='store_true',
+            )
+
+        case 'show_bright_colors':
+            parser.add_argument(
+                '--show-bright-colors',
+                help=(
+                    'Show list of all available bright '
+                    'color aliases with values'
+                ),
+                action='store_true',
+            )
+
+        case 'show_common_colors':
+            parser.add_argument(
+                '--show-common-colors',
+                help=(
+                    'Show list of all available common '
+                    'color aliases with values'
+                ),
+                action='store_true',
+            )
+
+        case 'show_skin_colors':
+            parser.add_argument(
+                '--show-skin-colors',
+                help=(
+                    'Show list of all available skin '
+                    'color aliases with values'
+                ),
+                action='store_true',
+            )
+
+
         # Global arguments
         case 'seed':
             parser.add_argument(
-                '-s', '-seed',
-                help="Seed for random number generator. Can be 'random' or any other string to lock the seed",
+                '-s', '--seed',
+                help="Seed for random number generator. Can be ':random' or any other string to lock the seed",
                 default=ARGS['seed'],
                 type=argtypes.seed,
                 dest='seed',
+            )
+
+        case 'show_seed':
+            parser.add_argument(
+                '-ss', '--show-seed',
+                help='Display script current seed value',
+                action='store_const',
+                const=not ARGS['show_seed'],
+                default=ARGS['show_seed'],
+                dest='show_seed',
             )
 
         case 'quiet':
@@ -200,8 +271,8 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
         case 'effects':
             parser.add_argument(
                 '-e',
-                metavar="EFFECTS: 1-6",
-                help='List of enemy effects by indexes',
+                metavar="EFFECTS: 1-6 | 0",
+                help='String of enemy effects by indexes',
                 default=ARGS['effects'],
                 type=argtypes.effects,
                 dest='effects',
@@ -380,10 +451,26 @@ def add_argument(argument, parser: argparse.ArgumentParser, ARGS, script_name):
                 dest='hat_color',
             )
 
+        case _:
+            print(f'Argument {argument} not found!')
+            exit(0)
 
 def setup(script_name):
     settings = tomllib.load(open('settings.toml', 'rb'))
     ARGS = settings['global'] | settings[script_name]
+
+    helps = {
+        'zombatars': {
+            'show_bright_colors': argtypes.show_bright_colors,
+            'show_common_colors': argtypes.show_common_colors,
+            'show_skin_colors': argtypes.show_skin_colors
+        },
+        'glyphs': {
+            'show_glyphsets': argtypes.show_glyphsets,
+            'show_colors': argtypes.show_colors,
+            'show_colorsets': argtypes.show_colorsets
+        }
+    }.get(script_name, dict())
 
     # Parse arguments
     parser = argparse.ArgumentParser(
@@ -391,7 +478,7 @@ def setup(script_name):
         add_help=False
     )
 
-    for argument in ('help', *tuple(ARGS.keys())):
+    for argument in ('help', *helps, *tuple(ARGS)):
         add_argument(argument, parser, ARGS, script_name)
 
     parsed_args = dict(parser.parse_args()._get_kwargs())
@@ -403,6 +490,17 @@ def setup(script_name):
         ARGS['glyph_color_set'] = argtypes.colorset(
             ARGS['glyph_color_set']
         )
+
+    if ARGS['show_seed']:
+        print(f'Seed: {ARGS['seed']}')
+
+    # Dislpay help for aliases and exit
+    for helper in helps:
+        if ARGS[helper]:
+            helps[helper]()
+
+    if any([ARGS[helper] for helper in helps]):
+        exit(0)
 
     # print(ARGS)
     return ARGS

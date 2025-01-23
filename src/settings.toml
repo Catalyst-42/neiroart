@@ -1,5 +1,25 @@
+[help]
+# Show help message
+# -help --help
+
+# Show available aliases (stored in groups.py)
+# 
+# Glyphs
+# --show-glyphsets
+# 
+# Colors
+# --show-colors
+# --show-colorsets
+# 
+# Zombatar colors:
+# --show-bright-colors
+# --show-common-colors
+# --show-skin-colors
+
 [global]
-seed = 'random'  # -s <str>
+seed = ':random'   # -s --seed <str>
+show_seed = false  # -ss --show-seed
+
 quiet = false    # -q
 output = false   # -o <filename>
 
@@ -18,33 +38,32 @@ image_height = 156      # -h <int>
 image_scale_factor = 4  # -x <int>
 
 [enemies]
-face = 'random'      # -f <int: 1-31>
-level = 'random'     # -l <int: 1-99>
-hp = 'random'        # -hp <int: 0-999>
-max_hp = 'random'    # -mhp <int: 1-999>
-mana = 'random'      # -m <int: 0-999>
-max_mana = 'random'  # -mm <int: 1-999>
-effects = 'random'   # -e <str: 1-6 | 0>
+face = ':random'      # -f <int: 1-31>
+level = ':random'     # -l <int: 1-99>
+hp = ':random'        # -hp <int: 0-999>
+max_hp = ':random'    # -mhp <int: 1-999>
+mana = ':random'      # -m <int: 0-999>
+max_mana = ':random'  # -mm <int: 1-999>
+effects = ':random'   # -e <str: 1-6 | 0>
 
 image_scale_factor = 8  # -x <int>
 
 [zombatars]
-background = 'random'        # -bg <int: 1-5>
-background_color = 'random'  # -bgc <int: 1-18 | bright_color>
-skin_color = 'random'        # -sc <int: 1-12 | skin_color>
-cloth = 'random'             # -c <int: 0-12>
-tidbit = 'random'            # -t <int: 0-14>
-tidbit_color = 'random'      # -tc <int: 1-18 | bright_color>
-accessory = 'random'         # -a <int: 0-16>
-accessory_color = 'random'   # -ac <int: 1-18 | bright_color>
-mustache = 'random'          # -m <int: 0-24>
-mustache_color = 'random'    # -mc <int: 1-18 | common_color>
-hair = 'random'              # -h <int: 0-16>
-hair_color = 'random'        # -hc <int: 1-18 | common_color>
-eyewear = 'random'           # -e <int: 0-16>
-eyewear_color = 'random'     # -ec <int: 1-18 | bright_color>
-hat = 'random'               # -hat <int: 0-14>
-hat_color = 'random'         # -hatc <int: 1-18 | bright_color>
+background = ':random'        # -bg <int: 1-5>
+background_color = ':random'  # -bgc <int: 1-18 | bright_color>
+skin_color = ':random'        # -sc <int: 1-12 | skin_color>
+cloth = ':random'             # -c <int: 0-12>
+tidbit = ':random'            # -t <int: 0-14>
+tidbit_color = ':random'      # -tc <int: 1-18 | bright_color>
+accessory = ':random'         # -a <int: 0-16>
+accessory_color = ':random'   # -ac <int: 1-18 | bright_color>
+mustache = ':random'          # -m <int: 0-24>
+mustache_color = ':random'    # -mc <int: 1-18 | common_color>
+hair = ':random'              # -h <int: 0-16>
+hair_color = ':random'        # -hc <int: 1-18 | common_color>
+eyewear = ':random'           # -e <int: 0-16>
+eyewear_color = ':random'     # -ec <int: 1-18 | bright_color>
+hat = ':random'               # -hat <int: 0-14>
+hat_color = ':random'         # -hatc <int: 1-18 | bright_color>
 
 image_scale_factor = 4  # -x <int>
-
