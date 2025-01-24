@@ -67,3 +67,15 @@ hat = ':random'               # -hat <int: 0-14>
 hat_color = ':random'         # -hatc <int: 1-18 | bright_color>
 
 image_scale_factor = 4  # -x <int>
+
+[map_linear]
+cell_style = ':square'  # -c {':square', ':cross'}
+cell_limit = 512        # -t <int>
+
+cell_color_set = ':casual'   # -cc <colorset> | <color> [<color> ...]
+background_color = ':black'  # -bg <color: r,g,b | #rrggbb | #rgb>
+color_style = ':random'      # -cs {':random', ':pulse', ':spot'}
+
+image_width = 156       # -w <int>
+image_height = 156      # -h <int>
+image_scale_factor = 4  # -x <int>

@@ -28,7 +28,6 @@ samples = "img/zombatars"
 #     --     |            --           |        --
 # Total      | 179_195_575_333_632_000 | 21_555_787_500
 
-
 background_id = solve_range(ARGS['background'], 1, 5)
 background_color = solve_zcolor(ARGS['background_color'], 'bright')
 skin_color = solve_zcolor(ARGS['skin_color'], 'skin')

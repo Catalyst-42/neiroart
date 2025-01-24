@@ -451,6 +451,9 @@ def add_argument(argument, parser, ARGS, script_name):
                 dest='hat_color',
             )
 
+        # Mapper
+        
+
         case _:
             print(f'Argument {argument} not found!')
             exit(0)

@@ -7,9 +7,9 @@ import numpy
 WIDTH = 256
 HEIGHT = 256
 
-COLOR = RGB['purple']
+COLOR = (255, 255, 255)
 SWITCH_COLORS = (RGB['yellow'], RGB['red'], RGB['green'])
-BACKGROUND_COLOR = BLACK
+BACKGROUND_COLOR = (1, 2, 1)
 
 MAX_ITERS = 512
 RESIZE_TO = (WIDTH*2, HEIGHT*2)
@@ -105,7 +105,7 @@ while len(working_stack):
     # add more straight paths (better on huge maps)
     # if 2 in sides: sides.append(2); sides.append(2); sides.append(2)
     # if 2 in sides: sides.append(2); sides.append(2); sides.append(2)
-    
+
     # make dead ends
     if iters > MAX_ITERS or not 12 < x < (WIDTH-12) or not 12 < y < (HEIGHT-12):
         for side in range(4, 8):
