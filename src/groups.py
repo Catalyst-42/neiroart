@@ -55,9 +55,10 @@ colors = {
     ':blue': (54, 162, 235),
     ':purple': (153, 102, 255),
     ':grey': (201, 203, 207),
+    ':dark': (21, 23, 32),
+
     ':white': (255, 255, 255),
     ':black': (0, 0, 0),
-    ':black': (21, 23, 32),
 }
 
 color_sets = {
@@ -71,7 +72,19 @@ color_sets = {
         (201, 203, 207),
     ),
     ':grayscale': (
-        tuple((c, c, c) for c in range(0, 256, 32))
+        tuple((c, c, c) for c in range(255, 0, -32))
+    ),
+    ':redscale': (
+        tuple((c, 0, 0) for c in range(255, 0, -32))
+    ),
+    ':greenscale': (
+        tuple((0, c, 0) for c in range(255, 0, -32))
+    ),
+    ':bluescale': (
+        tuple((0, 0, c) for c in range(255, 0, -32))
+    ),
+    ':purplescale': (
+        tuple((c, 0, c) for c in range(255, 0, -32))
     ),
 }
 
@@ -130,4 +143,9 @@ zombatar_colors = {
         ':skin-11': (125, 40, -31),
         ':skin-12': (92, 25, -53)
     }
+}
+
+cell_tilesets = {
+    ':cross': 'img/tilesets/cross.png',
+    ':square': 'img/tilesets/square.png',
 }

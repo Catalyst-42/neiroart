@@ -1,127 +1,176 @@
-from random import choice, randint
-from colors import RGB, BLACK
+import numpy as np
 from PIL import Image
 
-import numpy
+from random import (
+    choice
+)
 
-WIDTH = 256
-HEIGHT = 256
+from setup import setup
+from utils import (
+    resize,
+    limit,
+    show_and_save,
+)
 
-COLOR = (255, 255, 255)
-SWITCH_COLORS = (RGB['yellow'], RGB['red'], RGB['green'])
-BACKGROUND_COLOR = (1, 2, 1)
+ARGS = setup('mapper')
+samples = 'img/tilesets'
 
-MAX_ITERS = 512
-RESIZE_TO = (WIDTH*2, HEIGHT*2)
+# Load and split tileset
+t = np.array(Image.open(ARGS['tileset']).convert('RGB'))
+tile_width, tile_height, _ = np.array(t.shape) // 4
+tile_padding = ARGS['tile_padding']
 
-data = numpy.zeros((WIDTH, HEIGHT, 3), dtype=numpy.uint8)
-data[:][:] = BACKGROUND_COLOR
+# Full tile width and height
+cell_width = tile_width + tile_padding
+cell_height = tile_height + tile_padding
 
-def draw_side(x, y, side):
-    global COLOR
+tileset = tuple(  # Slice tileset to list
+    t[x:x+tile_width, y:y+tile_height]
+    for x in range(0, t.shape[0], tile_width)
+    for y in range(0, t.shape[1], tile_height)
+)
 
-    # change color in 1% change
-    if randint(1, 100) == 42:
-        COLOR = choice(SWITCH_COLORS)
+# Create canvas
+data = np.full(
+    (ARGS['image_height'], ARGS['image_width'], 3),
+    ARGS['background_color'],
+    np.uint8
+)
 
-    # draw tile
-    def right_enter(): data[x:x+3, y] = COLOR
-    def left_enter(): data[x-2:x+1, y] = COLOR
-    def up_enter(): data[x, y:y+3] = COLOR
-    def down_enter(): data[x, y-2:y+1] = COLOR
+if ARGS['tile_limit'] == 0:
+    ARGS['tile_limit'] = (
+        data.shape[0]/cell_width * data.shape[1]/cell_height
+    )
 
-    if side in (1, 2, 4, 8, 11, 12, 13, 15): 
-        right_enter()
-        if all(data[x+6, y][:] == BACKGROUND_COLOR) and (x+6, y) not in working_stack: 
-            working_stack.append((x+6, y))
+def draw_cell(canvas, x, y, tile, color):
+    mask = np.all(tile == (0, 0, 0), axis=-1)
+    new_tile = np.full_like(tile, ARGS['background_color'])
+    new_tile[~mask] = color  # Fill non zero values with selected color
 
-    if side in (1, 2, 6, 9, 10, 13, 14, 15): 
-        left_enter()
-        if all(data[x-6, y][:] == BACKGROUND_COLOR) and (x-6, y) not in working_stack:
-            working_stack.append((x-6, y))
-    
-    if side in (1, 3, 5, 8, 9, 12, 13, 14): 
-        up_enter()
-        if all(data[x, y+6][:] == BACKGROUND_COLOR) and (x, y+6) not in working_stack:
-            working_stack.append((x, y+6))
-    
-    if side in (1, 3, 7, 10, 11, 12, 14, 15): 
-        down_enter()
-        if all(data[x, y-6][:] == BACKGROUND_COLOR) and (x, y-6) not in working_stack:
-            working_stack.append((x, y-6))
+    canvas[y:y+tile.shape[0], x:x+tile.shape[1]] = new_tile
 
-# debug: draw all tile samples
-# x, y = 20, 44
-# working_stack = []
-# for side in range(16):
-#     x += 6
-#     if (side) % 4 == 0: 
-#         x = 20
-#         y -= 6
-#     draw_side(x, y, side)
-#     data[x, y] = RGB['red'] # center
+# Debug: draw tileset by tiles
+if ARGS['show_tiles']:
+    x = y = tile_padding
+    for tile in range(16):
+        color = [255] * 3
+        data[y, x] = (255, 0, 0)  # Mark center
+        draw_cell(data, x, y, tileset[tile], color)
 
-x, y = WIDTH//2, HEIGHT//2
-working_stack = []
-iters = 0
+        if (tile + 1) % 4 == 0:  # Go on next line
+            x -= (cell_width) * 3
+            y += cell_height
+        else:
+            x += cell_width
 
-# draw first tile
-draw_side(x, y, choice((1, 12, 13, 14, 15)))
+# Process growth
+to_process = [(  # (x, y) values
+    (ARGS['image_width'] - tile_width) // 2,
+    (ARGS['image_height'] - tile_height) // 2
+)]
+processed = dict()
+color = choice(ARGS['tile_colorset'])
 
-# generate tiles
-while len(working_stack):
-    x, y = working_stack.pop(randint(0, len(working_stack)-1))
-    sides = [side for side in range(1, 16)]
+up    = 0b1000
+down  = 0b0100
+left  = 0b0010
+right = 0b0001
 
-    # exclude unavailable sides to expanding
-    def remove_sides(*sides_to_remove):
-        for side in sides_to_remove:
-            if side in sides: sides.remove(side)
+directions = (
+    # x_shift, y_shift, direction, oppsite direction
+    (0, -1, up, down),
+    (0, 1, down, up),
+    (-1, 0, left, right),
+    (1, 0, right, left)
+)
 
-    # right
-    if all(data[x+6, y][:] != BACKGROUND_COLOR) and all(data[x+4, y][:] == BACKGROUND_COLOR): 
-        remove_sides(1, 2, 4, 8, 11, 12, 13, 15)
-    elif all(data[x+6, y][:] != BACKGROUND_COLOR) and all(data[x+4, y][:] != BACKGROUND_COLOR): 
-        remove_sides(0, 3, 5, 6, 7, 9, 10, 14)
+while to_process:
+    x, y = to_process.pop(0)
+    available_tiles = [*range(1, 16)] if len(processed) else [15]
 
-    # left
-    if all(data[x-6, y][:] != BACKGROUND_COLOR) and all(data[x-4, y][:] == BACKGROUND_COLOR): 
-        remove_sides(1, 2, 6, 9, 10, 13, 14, 15)
-    elif all(data[x-6, y][:] != BACKGROUND_COLOR) and all(data[x-4, y][:] != BACKGROUND_COLOR): 
-        remove_sides(0, 3, 4, 5, 7, 8, 11, 12)
+    # Check available growth directions
+    for direction in directions:
+        check_x = x + direction[0] * cell_width
+        check_y = y + direction[1] * cell_height
+        front = direction[2]
+        backwards = direction[3]
 
-    # up
-    if all(data[x, y+6][:] != BACKGROUND_COLOR) and all(data[x, y+4][:] == BACKGROUND_COLOR): 
-        remove_sides(1, 3, 5, 8, 9, 12, 13, 14)
-    elif all(data[x, y+6][:] != BACKGROUND_COLOR) and all(data[x, y+4][:] != BACKGROUND_COLOR): 
-        remove_sides(0, 2, 4, 6, 7, 10, 11, 15)
+        in_bounds = (
+            0 <= check_x <= ARGS['image_width'] - cell_width and
+            0 <= check_y <= ARGS['image_height'] - cell_height
+        )
 
-    # down
-    if all(data[x, y-6][:] != BACKGROUND_COLOR) and all(data[x, y-4][:] == BACKGROUND_COLOR): 
-        remove_sides(1, 3, 7, 10, 11, 12, 14, 15)
-    elif all(data[x, y-6][:] != BACKGROUND_COLOR) and all(data[x, y-4][:] != BACKGROUND_COLOR): 
-        remove_sides(0, 2, 4, 5, 6, 8, 9, 13)
+        if (check_x, check_y) in processed:
+            if processed[(check_x, check_y)] & backwards:
+                available_tiles = [
+                    tile for tile in available_tiles
+                    if tile & front
+                ]
+            else:
+                available_tiles = [
+                    tile for tile in available_tiles
+                    if not tile & front
+                ]
 
-    # add more straight paths (better on huge maps)
-    # if 2 in sides: sides.append(2); sides.append(2); sides.append(2)
-    # if 2 in sides: sides.append(2); sides.append(2); sides.append(2)
+        # Limit generation
+        elif (
+            ARGS['tile_limit'] and len(processed) > ARGS['tile_limit']
+            or not in_bounds
+        ):
+            available_tiles = [
+                tile for tile in available_tiles
+                if not tile & front
+            ]
 
-    # make dead ends
-    if iters > MAX_ITERS or not 12 < x < (WIDTH-12) or not 12 < y < (HEIGHT-12):
-        for side in range(4, 8):
-            if side in sides: sides = [side]
+    # Draw selected tile
+    tile = choice(available_tiles)
+    processed[(x, y)] = tile
 
-    # choice available side and draw it
-    side = choice(sides)
-    draw_side(x, y, side)
+    # Create new outgrowths
+    for direction in directions:
 
-    iters += 1
+        check_x = x + direction[0] * cell_width
+        check_y = y + direction[1] * cell_height
+        new_pos = (check_x, check_y)
 
-print(f'Generation done ({iters})')
+        if not direction[2] & tile:
+            continue
+
+        if not 0 <= check_x <= ARGS['image_width'] - cell_width \
+        or not 0 <= check_y <= ARGS['image_height'] - cell_height:
+            continue
+
+        if new_pos not in processed and new_pos not in to_process:
+            to_process.append(new_pos)
+
+# Color each cell in the end
+for i, pos in enumerate(processed):
+    x, y = pos
+    tile = processed[pos]
+
+    progress = i / len(processed)
+
+    color = choice(ARGS['tile_colorset'])
+    match ARGS['color_style']:
+        case ':pulse':
+            # Interpolate color by value
+            color = [
+                limit(int(c * (1 - progress)), 0, 255) for c in color
+            ]
+
+        case ':spot':
+            # Interpolate color in colorset
+            value = int(len(ARGS['tile_colorset']) * progress)
+            color = ARGS['tile_colorset'][
+                limit(value, 0, len(ARGS['tile_colorset']) - 1)
+            ]
+
+    draw_cell(data, x, y, tileset[tile], color)
 
 image = Image.fromarray(data)
-image = image.transpose(Image.Transpose.ROTATE_90)
-image = image.resize(RESIZE_TO, resample=Image.Resampling.BOX)
-
-image.save('image.png')
-image.show()
+image = resize(
+    image,
+    ARGS['image_width'] * ARGS['image_scale_factor'],
+    ARGS['image_height'] * ARGS['image_scale_factor']
+)
+show_and_save(image, ARGS['output'], ARGS['quiet'])

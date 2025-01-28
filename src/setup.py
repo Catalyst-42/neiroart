@@ -74,12 +74,15 @@ def add_argument(argument, parser, ARGS, script_name):
                 action='store_true',
             )
 
-
         # Global arguments
         case 'seed':
             parser.add_argument(
                 '-s', '--seed',
-                help="Seed for random number generator. Can be ':random' or any other string to lock the seed",
+                help=(
+                    'Seed for random number generator. '
+                    'Can be :random or any other string '
+                    'to lock the seed'
+                ),
                 default=ARGS['seed'],
                 type=argtypes.seed,
                 dest='seed',
@@ -152,22 +155,22 @@ def add_argument(argument, parser, ARGS, script_name):
                 dest='font_aliasing',
             )
 
-        case 'glyph_set':
+        case 'glyphset':
             parser.add_argument(
                 '-g',
                 help='List of symbols that will make up the image',
-                default=ARGS['glyph_set'],
+                default=ARGS['glyphset'],
                 type=argtypes.glyphset,
-                dest='glyph_set',
+                dest='glyphset',
             )
 
-        case 'glyph_color_set':
+        case 'glyph_colorset':
             parser.add_argument(
                 '-gc',
                 help='List of colors for glyphs',
-                default=ARGS['glyph_color_set'],
+                default=ARGS['glyph_colorset'],
                 type=str,
-                dest='glyph_color_set',
+                dest='glyph_colorset',
                 nargs='+'
             )
 
@@ -271,7 +274,7 @@ def add_argument(argument, parser, ARGS, script_name):
         case 'effects':
             parser.add_argument(
                 '-e',
-                metavar="EFFECTS: 1-6 | 0",
+                metavar='EFFECTS: 1-6 | 0',
                 help='String of enemy effects by indexes',
                 default=ARGS['effects'],
                 type=argtypes.effects,
@@ -452,11 +455,68 @@ def add_argument(argument, parser, ARGS, script_name):
             )
 
         # Mapper
-        
+        case 'tileset':
+            parser.add_argument(
+                '-t',
+                help='Tile view style. Can be :square, :cross or path to fileset file',
+                default=ARGS['tileset'],
+                type=argtypes.tileset,
+                dest='tileset',
+            )
+
+        case 'tile_limit':
+            parser.add_argument(
+                '-l', '-tl', '-lim',
+                help='Limit number of tiles to be generated',
+                default=ARGS['tile_limit'],
+                type=int,
+                dest='tile_limit',
+            )
+
+        case 'tile_padding':
+            parser.add_argument(
+                '-p', '-tp',
+                help='Padding between tiles on canvas',
+                default=ARGS['tile_padding'],
+                type=int,
+                dest='tile_padding',
+            )
+
+        case 'show_tiles':
+            parser.add_argument(
+                '-d', '--show_tiles',
+                help='Draw tileset int top left corner',
+                action='store_const',
+                const=not ARGS['show_tiles'],
+                default=ARGS['show_tiles'],
+                dest='show_tiles'
+            )
+
+        case 'tile_colorset':
+            parser.add_argument(
+                '-c', '-tc',
+                help='List of colors for tiles',
+                default=ARGS['tile_colorset'],
+                type=str,
+                dest='tile_colorset',
+            )
+
+        case 'color_style':
+            parser.add_argument(
+                '-cs',
+                help=(
+                    'Cell coloring style. May be '
+                    ":random, :pulse or :spot"
+                ),
+                default=ARGS["color_style"],
+                type=str,
+                choices=(':random', ':pulse', ':spot'),
+                dest="color_style",
+            )
 
         case _:
             print(f'Argument {argument} not found!')
-            exit(0)
+
 
 def setup(script_name):
     settings = tomllib.load(open('settings.toml', 'rb'))
@@ -484,24 +544,19 @@ def setup(script_name):
     for argument in ('help', *helps, *tuple(ARGS)):
         add_argument(argument, parser, ARGS, script_name)
 
-    parsed_args = dict(parser.parse_args()._get_kwargs())
-    for arg in parsed_args:
-        ARGS[arg] = parsed_args[arg]
+    ARGS.update(dict(parser.parse_args()._get_kwargs()))
 
-    # Flatten nargs+ types
-    if 'glyph_color_set' in ARGS:
-        ARGS['glyph_color_set'] = argtypes.colorset(
-            ARGS['glyph_color_set']
-        )
+    # Resolve colorsets (because argparse type in not enough)
+    for colorset in {'glyph_colorset', 'tile_colorset'}:
+        if colorset in ARGS:
+            ARGS[colorset] = argtypes.colorset(ARGS[colorset])
 
+    # Display seed
     if ARGS['show_seed']:
         print(f'Seed: {ARGS['seed']}')
 
     # Dislpay help for aliases and exit
-    for helper in helps:
-        if ARGS[helper]:
-            helps[helper]()
-
+    [helps[helper]() for helper in helps if ARGS[helper]]
     if any([ARGS[helper] for helper in helps]):
         exit(0)
 

@@ -1,14 +1,18 @@
 import argparse
+import PIL
 
 import random
 import time
 import re
 
+import PIL.Image
+
 from groups import (
     glyph_sets,
     colors,
     color_sets,
-    zombatar_colors
+    zombatar_colors,
+    cell_tilesets
 )
 
 # The argtypes do not resolve random values
@@ -181,3 +185,10 @@ def zombatar_common_color(value: str):
 
 def zombatar_skin_color(value: str):
     return zombatar_color(value, zombatar_colors['skin'])
+
+
+def tileset(value: str):
+    if value in cell_tilesets:
+        return cell_tilesets[value]
+
+    return value

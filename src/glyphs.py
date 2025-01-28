@@ -22,8 +22,8 @@ image = Image.fromarray(np.full(
     np.uint8
 ))
 
-colors = ARGS['glyph_color_set']
-glyphs = ARGS['glyph_set']
+colors = ARGS['glyph_colorset']
+glyphs = ARGS['glyphset']
 
 # Setup font
 draw = ImageDraw.Draw(image)

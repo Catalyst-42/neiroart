@@ -13,7 +13,7 @@ from setup import setup
 from utils import (
     resize,
     show_and_save,
-    solve_range
+    limit
 )
 
 ARGS = setup('enemies')
@@ -25,13 +25,13 @@ faces = Image.open('img/enemies/faces.png').convert('RGBA')
 numbers = Image.open('img/enemies/numbers.png').convert('RGBA')
 effects = Image.open('img/enemies/effects.png').convert('RGBA')
 
-face = (solve_range(ARGS['face'], 1, 31) - 1) * 16
+face = (limit(ARGS['face'], 1, 31) - 1) * 16
 face = faces.crop((face, 0, face + 16, 16))
 image.paste(face, (0, 0), face)
 
 # Hp bar
-max_hp = solve_range(ARGS["max_hp"], 1, 999)
-hp = solve_range(ARGS["hp"], 1, max_hp)
+max_hp = limit(ARGS["max_hp"], 1, 999)
+hp = limit(ARGS["hp"], 1, max_hp)
 
 # Red background
 draw.rectangle(
@@ -52,8 +52,8 @@ for i in hp_text:
     x += 4
 
 # Mana bar
-max_mana = solve_range(ARGS["max_mana"], 1, 999)
-mana = solve_range(ARGS["mana"], 0, max_mana)
+max_mana = limit(ARGS["max_mana"], 1, 999)
+mana = limit(ARGS["mana"], 0, max_mana)
 
 # Blue background
 if mana != 0:
@@ -76,7 +76,7 @@ for i in mana_text:
 
 # Level
 x, y = 1, 11
-level_text = str(solve_range(ARGS['level'], 1, 99))
+level_text = str(limit(ARGS['level'], 1, 99))
 
 if len(level_text) == 1:
     x += 2

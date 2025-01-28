@@ -9,7 +9,7 @@ from groups import (
 )
 
 
-def solve_range(value, min_value, max_value):
+def limit(value, min_value, max_value):
     random_value = randint(min_value, max_value)
 
     if isinstance(value, int):

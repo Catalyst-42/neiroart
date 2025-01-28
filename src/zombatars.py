@@ -5,12 +5,12 @@ from setup import setup
 from utils import (
     resize,
     show_and_save,
-    solve_range,
+    limit,
     solve_zcolor
 )
 
 ARGS = setup('zombatars')
-samples = "img/zombatars"
+samples = 'img/zombatars'
 
 # Image variants in order of rendering
 # 
@@ -28,21 +28,21 @@ samples = "img/zombatars"
 #     --     |            --           |        --
 # Total      | 179_195_575_333_632_000 | 21_555_787_500
 
-background_id = solve_range(ARGS['background'], 1, 5)
+background_id = limit(ARGS['background'], 1, 5)
 background_color = solve_zcolor(ARGS['background_color'], 'bright')
 skin_color = solve_zcolor(ARGS['skin_color'], 'skin')
-cloth_id = solve_range(ARGS['cloth'], 0, 12)
-tidbit_id = solve_range(ARGS['tidbit'], 0, 14)
+cloth_id = limit(ARGS['cloth'], 0, 12)
+tidbit_id = limit(ARGS['tidbit'], 0, 14)
 tidbit_color = solve_zcolor(ARGS['tidbit_color'], 'bright')
-accessory_id = solve_range(ARGS['accessory'], 0, 16)
+accessory_id = limit(ARGS['accessory'], 0, 16)
 accessory_color = solve_zcolor(ARGS['accessory_color'], 'bright')
-mustache_id = solve_range(ARGS['mustache'], 0, 24)
+mustache_id = limit(ARGS['mustache'], 0, 24)
 mustache_color = solve_zcolor(ARGS['mustache_color'], 'common')
-hair_id = solve_range(ARGS['hair'], 0, 16)
+hair_id = limit(ARGS['hair'], 0, 16)
 hair_color = solve_zcolor(ARGS['hair_color'], 'common')
-eyewear_id = solve_range(ARGS['eyewear'], 0, 16)
+eyewear_id = limit(ARGS['eyewear'], 0, 16)
 eyewear_color = solve_zcolor(ARGS['eyewear_color'], 'bright')
-hat_id = solve_range(ARGS['hat'], 0, 14)
+hat_id = limit(ARGS['hat'], 0, 14)
 hat_color = solve_zcolor(ARGS['hat_color'], 'bright')
 
 
