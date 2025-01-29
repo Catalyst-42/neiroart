@@ -30,17 +30,19 @@ tileset = tuple(  # Slice tileset to list
     for y in range(0, t.shape[1], tile_height)
 )
 
+if ARGS['as'] == 'tiles':
+    ARGS['image_width'] *= cell_width 
+    ARGS['image_width'] += tile_padding
+
+    ARGS['image_height'] *= cell_height
+    ARGS['image_height'] += tile_padding
+
 # Create canvas
 data = np.full(
     (ARGS['image_height'], ARGS['image_width'], 3),
     ARGS['background_color'],
     np.uint8
 )
-
-if ARGS['tile_limit'] == 0:
-    ARGS['tile_limit'] = (
-        data.shape[0]/cell_width * data.shape[1]/cell_height
-    )
 
 def draw_cell(canvas, x, y, tile, color):
     mask = np.all(tile == (0, 0, 0), axis=-1)
@@ -143,7 +145,7 @@ while to_process:
         if new_pos not in processed and new_pos not in to_process:
             to_process.append(new_pos)
 
-# Color each cell in the end
+# Draw each cell in the end
 for i, pos in enumerate(processed):
     x, y = pos
     tile = processed[pos]

@@ -136,13 +136,13 @@ def add_argument(argument, parser, ARGS, script_name):
                 dest='font_size',
             )
 
-        case 'font_margin':
+        case 'font_padding':
             parser.add_argument(
-                '-fm',
+                '-fp', '-fm',
                 help='Gap between glyphs on image',
-                default=ARGS['font_margin'],
+                default=ARGS['font_padding'],
                 type=int,
-                dest='font_margin',
+                dest='font_padding',
             )
 
         case 'font_aliasing':
@@ -199,6 +199,15 @@ def add_argument(argument, parser, ARGS, script_name):
                 default=ARGS['image_height'],
                 type=argtypes.dimension,
                 dest='image_height',
+            )
+
+        case 'as':
+            parser.add_argument(
+                '-as',
+                help='The size unit for image width and height',
+                default=ARGS['as'],
+                choices=('pixels', 'tiles'),
+                dest='as',
             )
 
         case 'image_scale_factor':
@@ -455,10 +464,23 @@ def add_argument(argument, parser, ARGS, script_name):
             )
 
         # Mapper
+        case 'show_tiles':
+            parser.add_argument(
+                '-d', '--show_tiles',
+                help='Draw tileset in top left corner',
+                action='store_const',
+                const=not ARGS['show_tiles'],
+                default=ARGS['show_tiles'],
+                dest='show_tiles'
+            )
+
         case 'tileset':
             parser.add_argument(
                 '-t',
-                help='Tile view style. Can be :square, :cross or path to fileset file',
+                help=(
+                    'Tile view style. Can be '
+                    'tile :alias or path to fileset file'
+                ),
                 default=ARGS['tileset'],
                 type=argtypes.tileset,
                 dest='tileset',
@@ -482,16 +504,6 @@ def add_argument(argument, parser, ARGS, script_name):
                 dest='tile_padding',
             )
 
-        case 'show_tiles':
-            parser.add_argument(
-                '-d', '--show_tiles',
-                help='Draw tileset int top left corner',
-                action='store_const',
-                const=not ARGS['show_tiles'],
-                default=ARGS['show_tiles'],
-                dest='show_tiles'
-            )
-
         case 'tile_colorset':
             parser.add_argument(
                 '-c', '-tc',
@@ -499,11 +511,12 @@ def add_argument(argument, parser, ARGS, script_name):
                 default=ARGS['tile_colorset'],
                 type=str,
                 dest='tile_colorset',
+                nargs='+'
             )
 
         case 'color_style':
             parser.add_argument(
-                '-cs',
+                '-m', '-cs',
                 help=(
                     'Cell coloring style. May be '
                     ":random, :pulse or :spot"
@@ -532,6 +545,11 @@ def setup(script_name):
             'show_glyphsets': argtypes.show_glyphsets,
             'show_colors': argtypes.show_colors,
             'show_colorsets': argtypes.show_colorsets
+        },
+        'mapper': {
+            'show_colors': argtypes.show_colors,
+            'show_colorsets': argtypes.show_colorsets
+
         }
     }.get(script_name, dict())
 

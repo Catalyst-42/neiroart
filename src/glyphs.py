@@ -15,6 +15,13 @@ from utils import (
 
 ARGS = setup('glyphs')
 
+if ARGS['as'] == 'tiles':
+    ARGS['image_width'] *= ARGS['font_size'] + ARGS['font_padding']
+    ARGS['image_width'] += ARGS['font_padding']
+
+    ARGS['image_height'] *= ARGS['font_size'] + ARGS['font_padding']
+    ARGS['image_height'] += ARGS['font_padding']
+
 # Create canvas
 image = Image.fromarray(np.full(
     (ARGS['image_height'], ARGS['image_width'], 3),
@@ -41,20 +48,21 @@ except OSError:
 
 # Draw glyphs
 for x in range(
-        ARGS['font_margin'],
+        ARGS['font_padding'],
         ARGS['image_width'],
-        ARGS['font_size'] + ARGS['font_margin']
+        ARGS['font_size'] + ARGS['font_padding']
     ):
     for y in range(
-            ARGS['font_margin'],
+            ARGS['font_padding'],
             ARGS['image_height'],
-            ARGS['font_size'] + ARGS['font_margin']
+            ARGS['font_size'] + ARGS['font_padding']
         ):
         draw.text(
-            xy=(x, y),
+            xy=(x + ARGS['font_size']//2, y + ARGS['font_size']//2),
             text=choice(glyphs),
             font=font,
-            fill=choice(colors)
+            fill=choice(colors),
+            anchor='mm'
         )
 
 image = resize(

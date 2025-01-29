@@ -48,14 +48,14 @@ glyph_sets = {
 }
 
 colors = {
-    ':red': (255, 99, 132),
-    ':orange': (255, 159, 64),
-    ':yellow': (255, 205, 86),
-    ':green': (75, 192, 192),
-    ':blue': (54, 162, 235),
-    ':purple': (153, 102, 255),
-    ':grey': (201, 203, 207),
-    ':dark': (21, 23, 32),
+    ':c:red': (255, 99, 132),
+    ':c:orange': (255, 159, 64),
+    ':c:yellow': (255, 205, 86),
+    ':c:green': (75, 192, 192),
+    ':c:blue': (54, 162, 235),
+    ':c:purple': (153, 102, 255),
+    ':c:grey': (201, 203, 207),
+    ':c:black': (21, 23, 32),
 
     ':white': (255, 255, 255),
     ':black': (0, 0, 0),
@@ -147,5 +147,6 @@ zombatar_colors = {
 
 cell_tilesets = {
     ':cross': 'img/tilesets/cross.png',
+    ':tiny': 'img/tilesets/tiny.png',
     ':square': 'img/tilesets/square.png',
 }

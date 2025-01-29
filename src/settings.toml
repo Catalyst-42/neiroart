@@ -26,15 +26,17 @@ output = false   # -o <filename>
 [glyphs]
 font_name = 'fonts/Metafont.ttf'  # -fn <str>
 font_size = 10                    # -fs <int>
-font_margin = 2                   # -fm <int>
+font_padding = 2                  # -fp -fm <int>
 font_aliasing = true              # -fa
 
-glyphset = ':borders'        # -g  <glyphset | str>
-glyph_colorset = ':casual'   # -gc <colorset> | <color> [<color> ...]
-background_color = ':black'  # -bg <color: r,g,b | #rrggbb | #rgb>
+glyphset = ':borders'          # -g  <glyphset | str>
+glyph_colorset = ':casual'     # -gc <colorset> | <color> [<color> ...]
+background_color = ':c:black'  # -bg <color: r,g,b | #rrggbb | #rgb>
 
-image_width = 156       # -w <int>
-image_height = 156      # -h <int>
+image_width = 10   # -w <int>
+image_height = 10  # -h <int>
+as = 'tiles'       # -as {'pixels', 'tiles'}
+
 image_scale_factor = 4  # -x <int>
 
 [enemies]
@@ -69,18 +71,18 @@ hat_color = ':random'         # -hatc <int: 1-18 | bright_color>
 image_scale_factor = 4  # -x <int>
 
 [mapper]
-tileset = ':cross'  # -t <tileset | path>
-tile_limit = false  # -l -tl -lim <int>
-tile_padding = 1    # -p -tp <ing>
-
 show_tiles = false  # -d --show-tiles
 
-tile_colorset = ':grayscale' # -c -tc <colorset> | <color> [<color> ...]
-background_color = ':black'  # -bg <color: r,g,b | #rrggbb | #rgb>
-color_style = ':pulse'       # -cs {':random', ':pulse', ':spot'}
+tileset = ':cross'  # -t <tileset | path>
+tile_limit = false  # -l -tl -lim <int>
+tile_padding = 1    # -p -tp <int>
 
-image_width = 512   # -w <int>
-image_height = 512  # -h <int>
-as = 'pixels'      # -as {'pixels', 'tiles'}
+tile_colorset = ':casual'      # -c -tc <colorset> | <color> [<color> ...]
+background_color = ':c:black'  # -bg <color: r,g,b | #rrggbb | #rgb>
+color_style = ':spot'          # -m -cs {':random', ':pulse', ':spot'}
+
+image_width = 26   # -w <int>
+image_height = 26  # -h <int>
+as = 'tiles'       # -as {'pixels', 'tiles'}
 
 image_scale_factor = 4  # -x <int>

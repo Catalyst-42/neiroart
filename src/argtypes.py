@@ -113,8 +113,8 @@ def color(value):
 
 
 def seed(value):
-    value = time.time() if value == ':random' else value
-    value = str(value)
+    if value == ':random':
+        value = hex(int(time.time() * 10e6))[2:]
 
     random.seed(value)
     return value
