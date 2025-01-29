@@ -1,3 +1,6 @@
+
+# FIXME: DELETE THIS CODE
+
 RGB = {
     'red': (255, 99, 132),
     'orange': (255, 159, 64),

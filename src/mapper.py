@@ -66,20 +66,19 @@ if ARGS['show_tiles']:
             x += cell_width
 
 # Process growth
+processed = dict()  # (x, y): tile_index
 to_process = [(  # (x, y) values
     (ARGS['image_width'] - tile_width) // 2,
     (ARGS['image_height'] - tile_height) // 2
 )]
-processed = dict()
-color = choice(ARGS['tile_colorset'])
 
 up    = 0b1000
 down  = 0b0100
 left  = 0b0010
 right = 0b0001
 
+# x_vel, y_vel, dir, -dir
 directions = (
-    # x_shift, y_shift, direction, oppsite direction
     (0, -1, up, down),
     (0, 1, down, up),
     (-1, 0, left, right),
@@ -145,26 +144,24 @@ while to_process:
         if new_pos not in processed and new_pos not in to_process:
             to_process.append(new_pos)
 
-# Draw each cell in the end
+# Paint each cell in the end
 for i, pos in enumerate(processed):
     x, y = pos
     tile = processed[pos]
 
     progress = i / len(processed)
+    color = choice(ARGS['colorset'])
 
-    color = choice(ARGS['tile_colorset'])
     match ARGS['color_style']:
         case ':pulse':
-            # Interpolate color by value
             color = [
                 limit(int(c * (1 - progress)), 0, 255) for c in color
             ]
 
         case ':spot':
-            # Interpolate color in colorset
-            value = int(len(ARGS['tile_colorset']) * progress)
-            color = ARGS['tile_colorset'][
-                limit(value, 0, len(ARGS['tile_colorset']) - 1)
+            value = int(len(ARGS['colorset']) * progress)
+            color = ARGS['colorset'][
+                limit(value, 0, len(ARGS['colorset']) - 1)
             ]
 
     draw_cell(data, x, y, tileset[tile], color)
@@ -175,4 +172,5 @@ image = resize(
     ARGS['image_width'] * ARGS['image_scale_factor'],
     ARGS['image_height'] * ARGS['image_scale_factor']
 )
+
 show_and_save(image, ARGS['output'], ARGS['quiet'])

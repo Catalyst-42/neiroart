@@ -29,7 +29,7 @@ image = Image.fromarray(np.full(
     np.uint8
 ))
 
-colors = ARGS['glyph_colorset']
+colors = ARGS['colorset']
 glyphs = ARGS['glyphset']
 
 # Setup font

@@ -3,6 +3,7 @@ import tomllib
 
 import argtypes
 
+
 def add_argument(argument, parser, ARGS, script_name):
     match argument:
         # Helper arguments
@@ -101,7 +102,10 @@ def add_argument(argument, parser, ARGS, script_name):
         case 'quiet':
             parser.add_argument(
                 '-q',
-                help='Do not show result image. Disabled if no output image specified',
+                help=(
+                    'Do not show result image. Disabled if '
+                    'no output image specified'
+                ),
                 action='store_const',
                 const=not ARGS['quiet'],
                 default=ARGS['quiet'],
@@ -111,7 +115,10 @@ def add_argument(argument, parser, ARGS, script_name):
         case 'output':
             parser.add_argument(
                 '-o',
-                help='Output image, must be with image extension such as .png, .jpeg, .bmp or other',
+                help=(
+                    'Output image, must be with image extension '
+                    'such as .png, .jpeg, .bmp or other'
+                ),
                 default=ARGS['output'],
                 type=str,
                 dest='output',
@@ -504,13 +511,13 @@ def add_argument(argument, parser, ARGS, script_name):
                 dest='tile_padding',
             )
 
-        case 'tile_colorset':
+        case 'colorset':
             parser.add_argument(
                 '-c', '-tc',
                 help='List of colors for tiles',
-                default=ARGS['tile_colorset'],
+                default=ARGS['colorset'],
                 type=str,
-                dest='tile_colorset',
+                dest='colorset',
                 nargs='+'
             )
 
@@ -527,7 +534,75 @@ def add_argument(argument, parser, ARGS, script_name):
                 dest="color_style",
             )
 
-        case _:
+        # Worm
+        case 'move_straight':
+            parser.add_argument(
+                '-ms',
+                help='Allow worm to move straight',
+                action='store_const',
+                const=not ARGS['move_straight'],
+                default=ARGS['move_straight'],
+                dest='move_straight'
+            )
+
+        case 'move_diagonal':
+            parser.add_argument(
+                '-md',
+                help='Allow worm to move diagonally',
+                action='store_const',
+                const=not ARGS['move_diagonal'],
+                default=ARGS['move_diagonal'],
+                dest='move_diagonal'
+            )
+
+        case 'move_backwards':
+            parser.add_argument(
+                '-mb',
+                help='Allow worm to move backwards to prevous position',
+                action='store_const',
+                const=not ARGS['move_backwards'],
+                default=ARGS['move_backwards'],
+                dest='move_backwards'
+            )
+
+        case 'step_min_length':
+            parser.add_argument(
+                '-smin',
+                help='Worm step minimum length',
+                default=ARGS['step_min_length'],
+                type=int,
+                dest='step_min_length',
+            )
+
+        case 'step_max_length':
+            parser.add_argument(
+                '-smax',
+                help='Worm step maximum length',
+                default=ARGS['step_max_length'],
+                type=int,
+                dest='step_max_length',
+            )
+
+        case 'step_limit':
+            parser.add_argument(
+                '-l', '-sl', '-lim',
+                help='Number of steps for worm to move',
+                default=ARGS['step_limit'],
+                type=int,
+                dest='step_limit',
+            )
+
+        case 'colorset':
+            parser.add_argument(
+                '-c', '-sc',
+                help='List of colors for step pixels',
+                default=ARGS['colorset'],
+                type=str,
+                dest='colorset',
+                nargs='+'
+            )
+
+        case _:  # TODO: Remove
             print(f'Argument {argument} not found!')
 
 
@@ -549,6 +624,10 @@ def setup(script_name):
         'mapper': {
             'show_colors': argtypes.show_colors,
             'show_colorsets': argtypes.show_colorsets
+        },
+        'worm': {
+            'show_colors': argtypes.show_colors,
+            'show_colorsets': argtypes.show_colorsets
 
         }
     }.get(script_name, dict())
@@ -565,9 +644,8 @@ def setup(script_name):
     ARGS.update(dict(parser.parse_args()._get_kwargs()))
 
     # Resolve colorsets (because argparse type in not enough)
-    for colorset in {'glyph_colorset', 'tile_colorset'}:
-        if colorset in ARGS:
-            ARGS[colorset] = argtypes.colorset(ARGS[colorset])
+    if 'colorset' in ARGS:
+        ARGS['colorset'] = argtypes.colorset(ARGS['colorset'])
 
     # Display seed
     if ARGS['show_seed']:

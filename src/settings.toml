@@ -30,7 +30,7 @@ font_padding = 2                  # -fp -fm <int>
 font_aliasing = true              # -fa
 
 glyphset = ':borders'          # -g  <glyphset | str>
-glyph_colorset = ':casual'     # -gc <colorset> | <color> [<color> ...]
+colorset = ':casual'           # -c <colorset> | <color> [<color> ...]
 background_color = ':c:black'  # -bg <color: r,g,b | #rrggbb | #rgb>
 
 image_width = 10   # -w <int>
@@ -77,12 +77,29 @@ tileset = ':cross'  # -t <tileset | path>
 tile_limit = false  # -l -tl -lim <int>
 tile_padding = 1    # -p -tp <int>
 
-tile_colorset = ':casual'      # -c -tc <colorset> | <color> [<color> ...]
+colorset = ':casual'           # -c -tc <colorset> | <color> [<color> ...]
 background_color = ':c:black'  # -bg <color: r,g,b | #rrggbb | #rgb>
 color_style = ':spot'          # -m -cs {':random', ':pulse', ':spot'}
 
 image_width = 26   # -w <int>
 image_height = 26  # -h <int>
 as = 'tiles'       # -as {'pixels', 'tiles'}
+
+image_scale_factor = 4  # -x <int>
+
+[worm]
+move_straight = true    # -ms
+move_diagonal = false   # -md
+move_backwards = false  # -mb
+
+step_min_length = 2  # -smin <int>
+step_max_length = 2  # -smax <int>
+step_limit = 8169    # -l -sl -lim <int>
+
+colorset = ':casual'           # -c <colorset> | <color> [<color> ...]
+background_color = ':c:black'  # -bg <color: r,g,b | #rrggbb | #rgb>
+
+image_width = 128   # -w <int>
+image_height = 128  # -h <int>
 
 image_scale_factor = 4  # -x <int>

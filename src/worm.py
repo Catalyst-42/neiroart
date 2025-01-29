@@ -1,67 +1,84 @@
-from random import choice, randint
-from colors import RGB, BLACK, WHITE
+import numpy as np
 from PIL import Image
 
-import numpy
+from random import (
+    choice,
+    randint
+)
 
-WIDTH = 256
-HEIGHT = 256
+from setup import setup
+from utils import (
+    resize,
+    show_and_save,
+)
 
-COLORS = (WHITE, )
-BACKGROUND_COLOR = BLACK
+ARGS = setup('worm')
 
-STEP_LENGTH_MIN = 1
-STEP_LENGTH_MAX = 1
+# Create canvas
+data = np.full(
+    (ARGS['image_height'], ARGS['image_width'], 3),
+    ARGS['background_color'],
+    np.uint8
+)
 
-MAX_ITERS = 8192
-RESIZE_TO = (WIDTH*2, HEIGHT*2)
+directions = []
+cells = dict()  # (x, y): visits
 
-data = numpy.zeros((WIDTH, HEIGHT, 3), dtype=numpy.uint8)
-data[:][:] = BACKGROUND_COLOR
+if ARGS['move_straight']:
+    directions.extend((
+        (0, -1),  # Up
+        (0, 1),   # Down
+        (-1, 0),  # Left
+        (1, 0),   # Right
+    ))
 
-x, y = WIDTH//2, HEIGHT//2
-direction = choice((1, 2, 3, 4))
-iters = 0
+if ARGS['move_diagonal']:
+    directions.extend((
+        (-1, -1),  # Up left
+        (-1, 1),   # Up right
+        (1, -1),   # Down left
+        (1, 1),    # Down right
+    ))
 
-# random walk
-for i in range(MAX_ITERS):
-    # set move directoin (can't move backwards)
-    if direction == 1: direction = choice((3, 4))
-    elif direction == 2: direction = choice((3, 4))
-    elif direction == 3: direction = choice((1, 2))
-    elif direction == 4: direction = choice((1, 2))
-    
-    # make n steps in one direction
-    for step in range(randint(STEP_LENGTH_MIN, STEP_LENGTH_MAX)):
-        # set layer color
-        if all(data[x][y][:] == BACKGROUND_COLOR): # background layer
-            data[x][y] = COLORS[0]
-        else:
-            for color in range(len(COLORS) - 1): # layers above COLORS[0]
-                if all(data[x][y][:] == COLORS[color]):
-                    data[x][y] = COLORS[color + 1]
-                    break
+# Random walk
+x, y = ARGS['image_width']//2, ARGS['image_height']//2
+direction = choice(directions)
+
+for i in range(ARGS['step_limit']):
+    # Choice direction
+    available_directions = directions.copy()
+    if not ARGS['move_backwards']:  # Remove previous direction
+        available_directions.remove(direction)
+    direction = choice(available_directions)
+
+    # Make steps in this direction
+    for step in range(
+        randint(ARGS['step_min_length'], ARGS['step_max_length'])
+    ):
+        x += direction[0]
+        y += direction[1]
+
+        if not 0 <= x <= ARGS['image_width'] - 1:
+            x = abs(x - ARGS['image_width'] + 2)
+
+        if not 0 <= y <= ARGS['image_height'] - 1:
+            y = abs(y - ARGS['image_height'] + 2)
         
-        # move in direction
-        match direction:
-            case 1: y+=1 # up
-            case 2: y-=1 # down
-            case 3: x+=1 # right
-            case 4: x-=1 # left
-        
-        # normalize x and y (map is tor)
-        if x >= WIDTH: x-=WIDTH
-        if x < 0: x+=WIDTH
-        if y >= HEIGHT: y-=HEIGHT
-        if y < 0: y+=HEIGHT
+        cells.setdefault((x, y), 1)
+        cells[(x, y)] += 1
 
-        iters += 1
+# Paint
+for i, cell in enumerate(cells):
+    color = min(cells[cell], len(ARGS['colorset'])) - 1
+    x, y = cell
 
-print(f'Generation done ({iters})')
+    data[y][x] = ARGS['colorset'][color]
 
 image = Image.fromarray(data)
-image = image.transpose(Image.Transpose.ROTATE_90)
-image = image.resize(RESIZE_TO, resample=Image.Resampling.BOX)
+image = resize(
+    image,
+    ARGS['image_width'] * ARGS['image_scale_factor'],
+    ARGS['image_height'] * ARGS['image_scale_factor']
+)
 
-image.save('image.png')
-image.show()
+show_and_save(image, ARGS['output'], ARGS['quiet'])
