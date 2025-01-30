@@ -103,3 +103,18 @@ image_width = 128   # -w <int>
 image_height = 128  # -h <int>
 
 image_scale_factor = 4  # -x <int>
+
+[primes]
+line_length = 3
+
+line_color = ':white'
+background_color_a = ':c:purple'
+background_color_b = 'c:yellow'
+
+exclude_circles = false  # The o figure
+exclude_crosses = false  # The x figure
+
+image_width = 23   # -w <int>
+image_height = 13  # -h <int>
+
+image_scale_factor = 4  # -x <int>
