@@ -602,6 +602,63 @@ def add_argument(argument, parser, ARGS, script_name):
                 nargs='+'
             )
 
+        # Coprimes
+        case 'line_length':
+            parser.add_argument(
+                '-l',
+                help='Length of one step',
+                default=ARGS['line_length'],
+                type=int,
+                dest='line_length',
+            )
+
+        case 'line_color':
+            parser.add_argument(
+                '-c', '-lc',
+                help='Color of dashes',
+                default=ARGS['line_color'],
+                type=argtypes.color,
+                dest='line_color',
+            )
+
+        case 'background_color_a':
+            parser.add_argument(
+                '-bga',
+                help='First background color',
+                default=ARGS['background_color_a'],
+                type=argtypes.color,
+                dest='background_color_a',
+            )
+
+        case 'background_color_b':
+            parser.add_argument(
+                '-bgb',
+                help='Second background color',
+                default=ARGS['background_color_b'],
+                type=argtypes.color,
+                dest='background_color_b',
+            )
+
+        case 'exclude_circles':
+            parser.add_argument(
+                '-eo',
+                help='Exclude circle segments on image',
+                action='store_const',
+                const=not ARGS['exclude_circles'],
+                default=ARGS['exclude_circles'],
+                dest='exclude_circles'
+            )
+
+        case 'exclude_crosses':
+            parser.add_argument(
+                '-ex',
+                help='Exclude cross segments on image',
+                action='store_const',
+                const=not ARGS['exclude_crosses'],
+                default=ARGS['exclude_crosses'],
+                dest='exclude_crosses'
+            )
+
         case _:  # TODO: Remove
             print(f'Argument {argument} not found!')
 
@@ -629,6 +686,9 @@ def setup(script_name):
             'show_colors': argtypes.show_colors,
             'show_colorsets': argtypes.show_colorsets
 
+        },
+        'primes': {
+            'show_colors': argtypes.show_colors,
         }
     }.get(script_name, dict())
 
