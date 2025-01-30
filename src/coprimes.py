@@ -1,38 +1,47 @@
 from PIL import Image
 import numpy as np
 
-from colors import RGB, BLACK, WHITE
+from math import gcd
+from random import randint
 
 from setup import setup
+from groups import figures
 from utils import (
     resize,
     show_and_save,
 )
 
-# Original idea: https://www.youtube.com/watch?v=IdwR58QmCo8
-
-# WIDTH and HEIGHT must be coprime numbers
-# (different prime numbers alaways coprime)
-
+# Original idea gathered from Foo52
+# https://www.youtube.com/watch?v=IdwR58QmCo8
 ARGS = setup('coprimes')
+l = ARGS['line_length']
 
-# Check WIDTH and HEIGHT
-def gcd(x, y):
+width = ARGS['image_width']
+height = ARGS['image_height']
+
+
+def get_coprimes(iw=None, ih=None):
     while True:
-        if x != 0 and y != 0:
-            (x := x % y) if x > y else (y := y % x)
-        else:
-            return x + y
+        width = randint(10, 100) if iw is None else width
+        height = randint(10, 100) if ih is None else height
 
-if gcd(ARGS['image_width'], ARGS['image_height']) != 1:
-    print(
-        f"{ARGS['image_width']} and {ARGS['image_height']} isn't coprime numbers!")
-    exit()
+        if gcd(width, height) == 1:
+            return width, height
+
+
+if width is None and height is not None:
+    width, height = get_coprimes(width, height)
+
+elif width is None and height is not None:
+    width, height = get_coprimes(width, height)
+
+elif width is None and height is None or gcd(width, height) != 1:
+    ARGS['image_width'], ARGS['image_height'] = get_coprimes()
 
 # Create canvas
 data = np.full((
-        ARGS['image_height'] * ARGS['line_length'],
-        ARGS['image_width'] * ARGS['line_length'],
+        ARGS['image_height'] * l,
+        ARGS['image_width'] * l,
         3
     ),
     ARGS['background_color_a'],
@@ -40,77 +49,75 @@ data = np.full((
 )
 
 x, y = 0, 0
+x_vel, y_vel = 1, 1
+
 step = 0
-
-x_vel = 1
-y_vel = 1
-
 bounces = 0
 
-# Create pattern on field
+# Create carpet
 while bounces != 2:
     bounces = 0
 
     # Draw line or pixel
     if step % 2 == 0:
-        for i in range(ARGS['line_length']):
+        for i in range(l):
             data[y + i*y_vel][x + i*x_vel] = ARGS['line_color']
-    
+
     # Move on next tile
-    x += x_vel * ARGS['line_length']
-    y += y_vel * ARGS['line_length']
+    x += x_vel * l
+    y += y_vel * l
 
     # Bounce
-    if not 0 < x < ARGS['image_width'] * ARGS['line_length']:
+    if not 0 < x < ARGS['image_width'] * l:
+        # if ARGS['line_length'] > 1:
+        x -= x_vel
         x_vel = -x_vel
-        x += x_vel
         bounces += 1
 
-    if not 0 < y < ARGS['image_height'] * ARGS['line_length']:
+    if not 0 < y < ARGS['image_height'] * l:
+        # if ARGS['line_length'] > 1:
         y -= y_vel
         y_vel = -y_vel
         bounces += 1
 
     step += 1
 
-# Finds and exludes small figures on image
-def make_custom_figure(figure_width, figure_height, *data):
-    # Here you can make own figure samples
-    # data = ((x, y, y_vel), (x, y, y_vel), ...)
-    figure = np.full((
-            figure_width * ARGS['line_length'],
-            figure_height * ARGS['line_length'],
-            3
-        ),
+
+def exclude_figure(figure):
+    w, h, cells = figure.values()
+
+    figure = np.full(
+        (w * l, h * l, 3),
         ARGS['background_color_a'],
         np.uint8
     )
 
-    for x, y, y_vel in data:            
-        for i in range(ARGS['line_length']):
-            xi = x*ARGS['line_length'] + i
-            yi = y*ARGS['line_length'] + i
+    # Generate figure
+    for x, y, y_vel in cells:            
+        for i in range(l):
+            xi = x*l + i
+            yi = y*l + i
 
             if y_vel != 1:
-                yi += ARGS['line_length'] - 1 - 2*i
-            
+                yi += l - 1 - 2*i
+
             figure[yi][xi] = ARGS['line_color']
 
     # Show sample
     # image = Image.fromarray(figure)
     # image.show()
 
-    return figure
-
-def exclude_figure(figure, figure_width, figure_height):
-    for y in range(ARGS['image_height'] - (figure_height-1)):
-        for x in range(ARGS['image_width'] - (figure_width-1)):
+    # Search and exclude figure from canvas
+    for y in range(ARGS['image_height'] - (h-1)):
+        for x in range(ARGS['image_width'] - (w-1)):
             is_figure = True
 
             # Compare sample to figure sample
-            for cy in range(ARGS['line_length'] * figure_height):
-                for cx in range(ARGS['line_length'] * figure_width):
-                    if any(data[y*ARGS['line_length'] + cy][x*ARGS['line_length'] + cx][:] != figure[cy][cx][:]):
+            for cy in range(l * h):
+                for cx in range(l * w):
+                    if any(
+                        data[y*l + cy][x*l + cx][:] != figure[cy][cx][:]
+                    ):
                         is_figure = False
                         break
 
@@ -118,48 +125,36 @@ def exclude_figure(figure, figure_width, figure_height):
             if not is_figure:
                 continue
 
-            for cy in range(ARGS['line_length'] * figure_height):
-                for cx in range(ARGS['line_length'] * figure_width):
-                    data[y*ARGS['line_length'] + cy][x*ARGS['line_length'] + cx] = ARGS['background_color_a']
+            for cy in range(l * h):
+                for cx in range(l * w):
+                    data[y*l + cy][x*l + cx] = ARGS['background_color_a']
 
-if ARGS['exclude_circles']:
-    circle = make_custom_figure(2, 2, (0, 0, -1), (1, 0, 1), (0, 1, 1), (1, 1, -1))
-    exclude_figure(circle, 2, 2)
-    print("Circles excluded")
 
-if ARGS['exclude_crosses']:
-    cross = make_custom_figure(4, 4, (0, 0, -1), (1, 0, 1), (2, 0, -1), (3, 0, 1), (0, 1, 1), (3, 1, -1), (0, 2, -1), (3, 2, 1), (0, 3, 1), (1, 3, -1), (2, 3, 1), (3, 3, -1))
-    exclude_figure(cross, 4, 4)
-    print("Crosses excluded")
+for figure in ARGS['exclude']:
+    exclude_figure(figures[figure])
 
 # Paint
-x_vel = 1
-y_vel = 0
+x, y = 0, 0
 
-x = 0
-y = 0
-step = 0
+if ARGS['background_color_a'] != ARGS['background_color_b']:
+    for y in range(ARGS['image_height'] * l):
+        color_a = ARGS['background_color_a']
+        color_b = ARGS['background_color_b']
 
-for y in range(ARGS['image_height'] * ARGS['line_length']):
-    color_a = ARGS['background_color_a']
-    color_b = ARGS['background_color_b']
+        if y % (4 * l) >= 2 * l:
+            color_a, color_b = color_b, color_a 
 
-    if y % (4*ARGS['line_length']) >= 2*ARGS['line_length']:
-        color_a, color_b = color_b, color_a 
-
-    for x in range(ARGS['image_width'] * ARGS['line_length']):
-        if all(data[y][x][:] == ARGS['line_color']):
-            color_a, color_b = color_b, color_a
-        else:
-            data[y][x] = color_a
-
-print("Coloring done")
+        for x in range(ARGS['image_width'] * l):
+            if all(data[y][x][:] == ARGS['line_color']):
+                color_a, color_b = color_b, color_a
+            else:
+                data[y][x] = color_a
 
 image = Image.fromarray(data)
 image = resize(
     image,
-    ARGS['image_width']*ARGS['line_length'] * ARGS['image_scale_factor'],
-    ARGS['image_height']*ARGS['line_length'] * ARGS['image_scale_factor'],
+    ARGS['image_width']*l * ARGS['image_scale_factor'],
+    ARGS['image_height']*l * ARGS['image_scale_factor'],
 )
 
 show_and_save(image, ARGS['output'], ARGS['quiet'])

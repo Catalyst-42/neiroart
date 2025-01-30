@@ -150,3 +150,25 @@ cell_tilesets = {
     ':tiny': 'img/tilesets/tiny.png',
     ':square': 'img/tilesets/square.png',
 }
+
+figures = {
+    ':circle': {
+        'width': 2,
+        'height': 2,
+        # Here you can make own figure samples
+        # 'data': ((x, y, y_vel), (x, y, y_vel), ...)
+        'data': (
+            (0, 0, -1), (1, 0, 1),
+            (0, 1, 1), (1, 1, -1)
+        )
+    },
+    ':cross': {
+        'width': 4,
+        'height': 4,
+        'data': (
+            (0, 0, -1), (1, 0, 1), (2, 0, -1), (3, 0, 1),
+            (0, 1, 1), (3, 1, -1), (0, 2, -1), (3, 2, 1),
+            (0, 3, 1), (1, 3, -1), (2, 3, 1), (3, 3, -1)
+        )
+    },
+}

@@ -108,7 +108,7 @@ def color(value):
         return value
 
     raise argparse.ArgumentTypeError(
-        f"Color '{value}' not found"
+        f'Color {value} not found'
     )
 
 
@@ -139,7 +139,7 @@ def none_or_int(value: str):
         return None
 
     raise argparse.ArgumentTypeError(
-        "Value must be a number or ':random'"
+        'Value must be a number or :random'
     )
 
 
@@ -154,7 +154,7 @@ def effects(value):
         return None
     
     raise argparse.ArgumentTypeError(
-        "Value must be numeric string of 1-6 numbers, 0 or ':random'"
+        'Value must be numeric string of 1-6 numbers, 0 or :random'
     )
 
 
@@ -171,7 +171,7 @@ def zombatar_color(value: str, colors):
 
     else:
         raise argparse.ArgumentTypeError(
-            f"Color '{value}' not found"
+            f'Color {value} not found'
         )
 
 
@@ -192,3 +192,15 @@ def tileset(value: str):
         return cell_tilesets[value]
 
     return value
+
+
+def coprime(value: str):
+    if value == ':random':
+        return None
+    
+    if value.isnumeric():
+        return int(value)
+    
+    raise argparse.ArgumentTypeError(
+        f'Value {value} can be threated as int or :random'
+    )

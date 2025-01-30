@@ -108,14 +108,13 @@ image_scale_factor = 4  # -x <int>
 line_width = 3   # -lw <ing>
 line_length = 3  # -l -ll <ing>
 
-line_color = ':black'             # -c -lc <color: r,g,b | #rrggbb | #rgb>
-background_color_a = ':white'# ':c:purple'  # -bga <color: r,g,b | #rrggbb | #rgb>
-background_color_b = ':white'# ':c:yellow'  # -bgb <color: r,g,b | #rrggbb | #rgb>
+line_color = ':c:black'           # -c -lc <color: r,g,b | #rrggbb | #rgb>
+background_color_a = ':c:yellow'  # -bga <color: r,g,b | #rrggbb | #rgb>
+background_color_b = ':c:purple'  # -bgb <color: r,g,b | #rrggbb | #rgb>
 
-exclude_circles = false  # -eo
-exclude_crosses = false  # -ex
+exclude = []  # -e <figure: {:circle, :cross}>
 
-image_width = 23   # -w <int>
-image_height = 13  # -h <int>
+image_width = ':random'   # -w <int>
+image_height = ':random'  # -h <int>
 
 image_scale_factor = 12  # -x <int>

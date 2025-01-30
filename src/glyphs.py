@@ -43,7 +43,7 @@ try:
         ARGS['font_size']
     )
 except OSError:
-    print(f"Font '{ARGS['font_name']}' doesn't found, aborting")
+    print(f"Font {ARGS['font_name']} doesn't found, aborting")
     exit(0)
 
 # Draw glyphs

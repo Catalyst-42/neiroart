@@ -2,7 +2,7 @@ import argparse
 import tomllib
 
 import argtypes
-
+import groups
 
 def add_argument(argument, parser, ARGS, script_name):
     match argument:
@@ -190,19 +190,25 @@ def add_argument(argument, parser, ARGS, script_name):
                 dest='background_color',
             )
 
-        case 'image_width':
+        case 'image_width' if script_name != 'coprimes':
             parser.add_argument(
                 '-w',
-                help='List of symbols that will make up the image',
+                help=(
+                    'Image width. Can be parametrized with -as '
+                    'flag as pixels or tiles (if available)',
+                ),
                 default=ARGS['image_width'],
                 type=argtypes.dimension,
                 dest='image_width',
             )
 
-        case 'image_height':
+        case 'image_height' if script_name != 'coprimes':
             parser.add_argument(
                 '-h',
-                help='List of symbols that will make up the image',
+                help=(
+                    'Image height. Can be parametrized with -as '
+                    'flag as pixels or tiles (if available)',
+                ),
                 default=ARGS['image_height'],
                 type=argtypes.dimension,
                 dest='image_height',
@@ -639,24 +645,38 @@ def add_argument(argument, parser, ARGS, script_name):
                 dest='background_color_b',
             )
 
-        case 'exclude_circles':
+        case 'exclude':
             parser.add_argument(
-                '-eo',
-                help='Exclude circle segments on image',
-                action='store_const',
-                const=not ARGS['exclude_circles'],
-                default=ARGS['exclude_circles'],
-                dest='exclude_circles'
+                '-e',
+                help='Exclude figure segments on image',
+                default=ARGS['exclude'],
+                dest='exclude',
+                choices=list(groups.figures.keys()),
+                nargs='+'
             )
 
-        case 'exclude_crosses':
+        case 'image_width':
             parser.add_argument(
-                '-ex',
-                help='Exclude cross segments on image',
-                action='store_const',
-                const=not ARGS['exclude_crosses'],
-                default=ARGS['exclude_crosses'],
-                dest='exclude_crosses'
+                '-w',
+                help=(
+                    'Base image width in tiles based on line '
+                    'length. Must be coprime with image height'
+                ),
+                default=ARGS['image_width'],
+                type=argtypes.coprime,
+                dest='image_width',
+            )
+
+        case 'image_height':
+            parser.add_argument(
+                '-h',
+                help=(
+                    'Base image height in tiles based on line '
+                    'length. Must be coprime with image height'
+                ),
+                default=ARGS['image_height'],
+                type=argtypes.coprime,
+                dest='image_height',
             )
 
         case _:  # TODO: Remove
@@ -703,7 +723,7 @@ def setup(script_name):
 
     ARGS.update(dict(parser.parse_args()._get_kwargs()))
 
-    # Resolve colorsets (because argparse type in not enough)
+    # Resolve nargs+ type values
     if 'colorset' in ARGS:
         ARGS['colorset'] = argtypes.colorset(ARGS['colorset'])
 
@@ -715,6 +735,8 @@ def setup(script_name):
     [helps[helper]() for helper in helps if ARGS[helper]]
     if any([ARGS[helper] for helper in helps]):
         exit(0)
+
+    # TODO: Validate all inputted values?
 
     # print(ARGS)
     return ARGS

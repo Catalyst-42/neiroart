@@ -1,9 +1,7 @@
 import numpy as np
 from PIL import Image
 
-from random import (
-    choice
-)
+from random import choice
 
 from setup import setup
 from utils import (
