@@ -12,7 +12,7 @@ from groups import (
     colors,
     color_sets,
     zombatar_colors,
-    cell_tilesets
+    tilesets
 )
 
 # The argtypes do not resolve random values
@@ -25,6 +25,7 @@ def show_zombatar_colors(colorset):
     print(f'List of available zombatars {colorset} colors:')
     for i, color, in enumerate(zombatar_colors[colorset]):
         print(' ', i, color)
+
 
 def show_bright_colors():
     show_zombatar_colors('bright')
@@ -188,8 +189,8 @@ def zombatar_skin_color(value: str):
 
 
 def tileset(value: str):
-    if value in cell_tilesets:
-        return cell_tilesets[value]
+    if value in tilesets:
+        return tilesets[value]
 
     return value
 

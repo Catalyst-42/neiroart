@@ -3,14 +3,14 @@
 # -help --help
 
 # Show available aliases (stored in groups.py)
-# 
+
 # Glyphs
 # --show-glyphsets
-# 
+
 # Colors
 # --show-colors
 # --show-colorsets
-# 
+
 # Zombatar colors
 # --show-bright-colors
 # --show-common-colors
@@ -105,8 +105,8 @@ image_height = 128  # -h <int>
 image_scale_factor = 4  # -x <int>
 
 [coprimes]
-line_width = 3   # -lw <ing>
-line_length = 3  # -l -ll <ing>
+line_length = 4     # -l -ll <ing>
+line_thickness = 2  # -t -lt <ing>
 
 line_color = ':c:black'           # -c -lc <color: r,g,b | #rrggbb | #rgb>
 background_color_a = ':c:yellow'  # -bga <color: r,g,b | #rrggbb | #rgb>
@@ -114,7 +114,7 @@ background_color_b = ':c:purple'  # -bgb <color: r,g,b | #rrggbb | #rgb>
 
 exclude = []  # -e <figure: {:circle, :cross}>
 
-image_width = ':random'   # -w <int>
-image_height = ':random'  # -h <int>
+image_width = ':random'   # -w <int | :random as 10-100 range> 
+image_height = ':random'  # -h <int | :random as 10-100 range> 
 
-image_scale_factor = 12  # -x <int>
+image_scale_factor = 6  # -x <int>

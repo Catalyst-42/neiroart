@@ -4,6 +4,11 @@ import tomllib
 import argtypes
 import groups
 
+# This setup file configures all parameters for argparse
+# for all scripts. Default values stored in settings.toml,
+# allaliases for values stored in groups.py 
+
+
 def add_argument(argument, parser, ARGS, script_name):
     match argument:
         # Helper arguments
@@ -611,11 +616,20 @@ def add_argument(argument, parser, ARGS, script_name):
         # Coprimes
         case 'line_length':
             parser.add_argument(
-                '-l',
+                '-l', '-ll',
                 help='Length of one step',
                 default=ARGS['line_length'],
                 type=int,
                 dest='line_length',
+            )
+
+        case 'line_thickness':
+            parser.add_argument(
+                '-t', '-lt',
+                help='Thickness of line',
+                default=ARGS['line_thickness'],
+                type=int,
+                dest='line_thickness',
             )
 
         case 'line_color':

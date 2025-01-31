@@ -13,6 +13,7 @@ from utils import (
 
 # Original idea gathered from Foo52
 # https://www.youtube.com/watch?v=IdwR58QmCo8
+
 ARGS = setup('coprimes')
 l = ARGS['line_length']
 
@@ -54,28 +55,45 @@ x_vel, y_vel = 1, 1
 step = 0
 bounces = 0
 
+
+def draw_line(canvas, x, y, x_vel, y_vel):
+    l = ARGS['line_length']
+    t = ARGS['line_thickness']
+
+    for i in range(l):
+        canvas[y + i*y_vel][x + i*x_vel] = ARGS['line_color']
+
+        for j in range(1, t):
+            dx, dy = i * x_vel, i * y_vel
+            directions = {
+                1: j < l - i,
+                -1: j <= i
+            }
+
+            for d in directions:
+                if directions[y_vel * d]:
+                    canvas[y + dy + j*d][x + dx] = ARGS['line_color']
+
+
 # Create carpet
 while bounces != 2:
     bounces = 0
 
     # Draw line or pixel
     if step % 2 == 0:
-        for i in range(l):
-            data[y + i*y_vel][x + i*x_vel] = ARGS['line_color']
+        draw_line(data, x, y, x_vel, y_vel)
 
     # Move on next tile
     x += x_vel * l
     y += y_vel * l
 
     # Bounce
-    if not 0 < x < ARGS['image_width'] * l:
-        # if ARGS['line_length'] > 1:
+    if not -1 < x < ARGS['image_width'] * l:
         x -= x_vel
         x_vel = -x_vel
         bounces += 1
 
-    if not 0 < y < ARGS['image_height'] * l:
-        # if ARGS['line_length'] > 1:
+    if not -1 < y < ARGS['image_height'] * l:
         y -= y_vel
         y_vel = -y_vel
         bounces += 1
@@ -93,41 +111,25 @@ def exclude_figure(figure):
     )
 
     # Generate figure
-    for x, y, y_vel in cells:            
-        for i in range(l):
-            xi = x*l + i
-            yi = y*l + i
+    for x, y, y_vel in cells:
+        x, y = x*l, y*l
 
-            if y_vel != 1:
-                yi += l - 1 - 2*i
+        if y_vel == -1:
+            y += l - 1
 
-            figure[yi][xi] = ARGS['line_color']
+        draw_line(figure, x, y, 1, y_vel)
 
     # Show sample
     # image = Image.fromarray(figure)
     # image.show()
 
-    # Search and exclude figure from canvas
+    # Compare and remove figure samples in sliding window
     for y in range(ARGS['image_height'] - (h-1)):
         for x in range(ARGS['image_width'] - (w-1)):
-            is_figure = True
+            window = np.s_[y*l:(y+h)*l, x*l:(x+w)*l]
 
-            # Compare sample to figure sample
-            for cy in range(l * h):
-                for cx in range(l * w):
-                    if any(
-                        data[y*l + cy][x*l + cx][:] != figure[cy][cx][:]
-                    ):
-                        is_figure = False
-                        break
-
-            # Remove figure
-            if not is_figure:
-                continue
-
-            for cy in range(l * h):
-                for cx in range(l * w):
-                    data[y*l + cy][x*l + cx] = ARGS['background_color_a']
+            if np.all(data[window] == figure):
+                data[window] = ARGS['background_color_a']
 
 
 for figure in ARGS['exclude']:
@@ -145,10 +147,20 @@ if ARGS['background_color_a'] != ARGS['background_color_b']:
             color_a, color_b = color_b, color_a 
 
         for x in range(ARGS['image_width'] * l):
-            if all(data[y][x][:] == ARGS['line_color']):
+            on_baseline = any((
+                (x % (2*l) == y % (2*l)),
+                ((x+1) % (2*l) == -y % (2*l))
+            ))
+
+            if on_baseline and np.all(data[y][x] == ARGS['line_color']):
                 color_a, color_b = color_b, color_a
-            else:
+            
+            if not np.all(data[y][x] == ARGS['line_color']):
                 data[y][x] = color_a
+
+            # Show baseline
+            # if on_baseline:
+            #     data[y][x] = (255, 0,0)
 
 image = Image.fromarray(data)
 image = resize(

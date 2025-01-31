@@ -1,3 +1,44 @@
+colors = {
+    ':c:red': (255, 99, 132),
+    ':c:orange': (255, 159, 64),
+    ':c:yellow': (255, 205, 86),
+    ':c:green': (75, 192, 192),
+    ':c:blue': (54, 162, 235),
+    ':c:purple': (153, 102, 255),
+    ':c:grey': (201, 203, 207),
+    ':c:black': (21, 23, 32),
+
+    ':white': (255, 255, 255),
+    ':black': (0, 0, 0),
+}
+
+color_sets = {
+    ':casual': (
+        (255, 99, 132),
+        (255, 159, 64),
+        (255, 205, 86),
+        (75, 192, 192),
+        (54, 162, 235),
+        (153, 102, 255),
+        (201, 203, 207),
+    ),
+    ':grayscale': (
+        tuple((c, c, c) for c in range(255, 0, -32))
+    ),
+    ':redscale': (
+        tuple((c, 0, 0) for c in range(255, 0, -32))
+    ),
+    ':greenscale': (
+        tuple((0, c, 0) for c in range(255, 0, -32))
+    ),
+    ':bluescale': (
+        tuple((0, 0, c) for c in range(255, 0, -32))
+    ),
+    ':purplescale': (
+        tuple((c, 0, c) for c in range(255, 0, -32))
+    ),
+}
+
 glyph_sets = {
     ':all': (
         '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKL'
@@ -44,47 +85,6 @@ glyph_sets = {
     ':c': (
         'ĆĈĊČC'
         'ćĉċčc'
-    ),
-}
-
-colors = {
-    ':c:red': (255, 99, 132),
-    ':c:orange': (255, 159, 64),
-    ':c:yellow': (255, 205, 86),
-    ':c:green': (75, 192, 192),
-    ':c:blue': (54, 162, 235),
-    ':c:purple': (153, 102, 255),
-    ':c:grey': (201, 203, 207),
-    ':c:black': (21, 23, 32),
-
-    ':white': (255, 255, 255),
-    ':black': (0, 0, 0),
-}
-
-color_sets = {
-    ':casual': (
-        (255, 99, 132),
-        (255, 159, 64),
-        (255, 205, 86),
-        (75, 192, 192),
-        (54, 162, 235),
-        (153, 102, 255),
-        (201, 203, 207),
-    ),
-    ':grayscale': (
-        tuple((c, c, c) for c in range(255, 0, -32))
-    ),
-    ':redscale': (
-        tuple((c, 0, 0) for c in range(255, 0, -32))
-    ),
-    ':greenscale': (
-        tuple((0, c, 0) for c in range(255, 0, -32))
-    ),
-    ':bluescale': (
-        tuple((0, 0, c) for c in range(255, 0, -32))
-    ),
-    ':purplescale': (
-        tuple((c, 0, c) for c in range(255, 0, -32))
     ),
 }
 
@@ -145,7 +145,7 @@ zombatar_colors = {
     }
 }
 
-cell_tilesets = {
+tilesets = {
     ':cross': 'img/tilesets/cross.png',
     ':tiny': 'img/tilesets/tiny.png',
     ':square': 'img/tilesets/square.png',
