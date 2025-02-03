@@ -9,7 +9,7 @@ from random import (
 from setup import setup
 from utils import (
     resize,
-    show_and_save,
+    show_and_save
 )
 
 ARGS = setup('worm')

@@ -77,7 +77,7 @@ tileset = ':cross'  # -t <tileset | path>
 tile_limit = false  # -l -tl -lim <int>
 tile_padding = 1    # -p -tp <int>
 
-colorset = ':casual'           # -c -tc <colorset> | <color> [<color> ...]
+colorset = ':casual'           # -c <colorset> | <color> [<color> ...]
 background_color = ':c:black'  # -bg <color: r,g,b | #rrggbb | #rgb>
 color_style = ':spot'          # -m -cs {':random', ':pulse', ':spot'}
 
@@ -116,5 +116,20 @@ exclude = []  # -e <figure: {:circle, :cross}>
 
 image_width = ':random'   # -w <int | :random as 10-100 range> 
 image_height = ':random'  # -h <int | :random as 10-100 range> 
+
+image_scale_factor = 6  # -x <int>
+
+[puzzles]
+tile_side = 10  # -t -p <int>
+
+ledge_length = 2  # -l <int>
+ledge_depth = 2   # -d <int>
+
+line_color = ':c:black'  # -lc <color: r,g,b | #rrggbb | #rgb>
+colorset = ':casual'     # -c <colorset> | <color> [<color> ...]
+
+image_width = 4   # -w <int | :random as 10-100 range> 
+image_height = 4  # -h <int | :random as 10-100 range> 
+as = 'tiles'      # -as {'pixels', 'tiles'}
 
 image_scale_factor = 6  # -x <int>

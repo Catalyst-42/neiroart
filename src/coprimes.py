@@ -1,5 +1,5 @@
-from PIL import Image
 import numpy as np
+from PIL import Image
 
 from math import gcd
 from random import randint
@@ -8,7 +8,7 @@ from setup import setup
 from groups import figures
 from utils import (
     resize,
-    show_and_save,
+    show_and_save
 )
 
 # Original idea gathered from Foo52
@@ -23,8 +23,8 @@ height = ARGS['image_height']
 
 def get_coprimes(iw=None, ih=None):
     while True:
-        width = randint(10, 100) if iw is None else width
-        height = randint(10, 100) if ih is None else height
+        width = randint(10, 100) if iw is None else iw
+        height = randint(10, 100) if ih is None else ih
 
         if gcd(width, height) == 1:
             return width, height
@@ -33,18 +33,15 @@ def get_coprimes(iw=None, ih=None):
 if width is None and height is not None:
     width, height = get_coprimes(width, height)
 
-elif width is None and height is not None:
+elif width is not None and height is None:
     width, height = get_coprimes(width, height)
 
 elif width is None and height is None or gcd(width, height) != 1:
-    ARGS['image_width'], ARGS['image_height'] = get_coprimes()
+    width, height = get_coprimes()
 
 # Create canvas
-data = np.full((
-        ARGS['image_height'] * l,
-        ARGS['image_width'] * l,
-        3
-    ),
+data = np.full(
+    (height * l, width * l, 3),
     ARGS['background_color_a'],
     np.uint8
 )
@@ -88,12 +85,12 @@ while bounces != 2:
     y += y_vel * l
 
     # Bounce
-    if not -1 < x < ARGS['image_width'] * l:
+    if not -1 < x < width * l:
         x -= x_vel
         x_vel = -x_vel
         bounces += 1
 
-    if not -1 < y < ARGS['image_height'] * l:
+    if not -1 < y < height * l:
         y -= y_vel
         y_vel = -y_vel
         bounces += 1
@@ -124,8 +121,8 @@ def exclude_figure(figure):
     # image.show()
 
     # Compare and remove figure samples in sliding window
-    for y in range(ARGS['image_height'] - (h-1)):
-        for x in range(ARGS['image_width'] - (w-1)):
+    for y in range(height - (h-1)):
+        for x in range(width - (w-1)):
             window = np.s_[y*l:(y+h)*l, x*l:(x+w)*l]
 
             if np.all(data[window] == figure):
@@ -139,14 +136,14 @@ for figure in ARGS['exclude']:
 x, y = 0, 0
 
 if ARGS['background_color_a'] != ARGS['background_color_b']:
-    for y in range(ARGS['image_height'] * l):
+    for y in range(height * l):
         color_a = ARGS['background_color_a']
         color_b = ARGS['background_color_b']
 
         if y % (4 * l) >= 2 * l:
             color_a, color_b = color_b, color_a 
 
-        for x in range(ARGS['image_width'] * l):
+        for x in range(width * l):
             on_baseline = any((
                 (x % (2*l) == y % (2*l)),
                 ((x+1) % (2*l) == -y % (2*l))
@@ -165,8 +162,8 @@ if ARGS['background_color_a'] != ARGS['background_color_b']:
 image = Image.fromarray(data)
 image = resize(
     image,
-    ARGS['image_width']*l * ARGS['image_scale_factor'],
-    ARGS['image_height']*l * ARGS['image_scale_factor'],
+    width*l * ARGS['image_scale_factor'],
+    height*l * ARGS['image_scale_factor'],
 )
 
 show_and_save(image, ARGS['output'], ARGS['quiet'])

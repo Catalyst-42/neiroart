@@ -1,53 +1,85 @@
-from colors import RGB, BLACK, WHITE
-from PIL import Image, ImageDraw
+import numpy as np
+from PIL import (
+    Image,
+    ImageDraw
+)
+
+from math import ceil
 from random import choice
 
-import numpy
+from setup import setup
+from utils import (
+    resize,
+    show_and_save
+)
 
-# one puzzle is 8x8 pixels
-WIDTH = 16*8 + 1
-HEIGHT = 16*8 + 1
+ARGS = setup('puzzles')
+s = ARGS['tile_side']
 
-LINE_COLOR = BLACK
-BACKGROUND_COLOR = WHITE 
+if ARGS['as'] == 'tiles':
+    ARGS['image_width'] *= (s + 1)
+    ARGS['image_width'] += 1
 
-COLORED = True
-CELL_COLORS = [RGB['purple'], RGB['yellow']]
+    ARGS['image_height'] *= (s + 1)
+    ARGS['image_height'] += 1
 
-RESIZE_TO = (WIDTH * 8, HEIGHT * 8)
+# Create canvas
+data = np.full(
+    (ARGS['image_height'], ARGS['image_width'], 3),
+    (0, 0, 0),
+    np.uint8
+)
 
-data = numpy.zeros((HEIGHT, WIDTH, 3), dtype=numpy.uint8)
-data[:][:] = BACKGROUND_COLOR
+# Image border
+data[0] = ARGS['line_color']
+data[-1] = ARGS['line_color']
 
-# generate puzzle pattern
-for y in range(0, HEIGHT):
-    for x in range(0, WIDTH):
-        # change puzzle ledge
-        if x % 8 == 0:
-            y_shift = choice((-1, 1))
+data[:, 0] = ARGS['line_color']
+data[:, -1] = ARGS['line_color']
 
-        if y % 8 == 0:
-            x_shift = [choice((-1, 1)) for _ in range(HEIGHT // 8)]
-        
-        # draw puzzle
-        if y % 8 == 0 or x % 8 == 0:
-            if x%8 in (3, 5) or y%8 in (3, 5):
-                data[y][x] = LINE_COLOR
+# Ledges
+l = ARGS['ledge_length']
+d = ARGS['ledge_depth']
 
-            if (y == 0 or y == HEIGHT-1 or x == 0 or x == WIDTH-1):
-                data[y][x] = LINE_COLOR
-            else:
-                data[y + y_shift if (2 < x%8 < 6) else y][x + x_shift[x//8] if (2 < y%8 < 6) else x][:] = LINE_COLOR
+for y in range(0, ARGS['image_height'] - 1, s + 1):    
+    for x in range(0, ARGS['image_width'] - 1, s + 1):
+        v = ceil((s - l) / 2)
 
+        if y != 0 and y != ARGS['image_height'] - 1:
+            # _    _ of  _|‾‾|_
+            data[y, x:x+v + 1] = ARGS['line_color']
+            data[y, x+v+1+l:x+s+1] = ARGS['line_color']
+
+            #   ‾‾   of  _|‾‾|_
+            dy = choice((-1, 1))
+            data[y+dy*d, x+v+1:x+v+1+l] = ARGS['line_color']
+
+            #  |  |  of  _|‾‾|_
+            data[y:y+dy*d + 1*dy:dy, x+v] = ARGS['line_color']
+            data[y:y+dy*d + 1*dy:dy, x+v+1+l] = ARGS['line_color']
+
+        # Same things but on y axis
+        if x != 0 and x != ARGS['image_width'] - 1:
+            data[y:y+v + 1, x] = ARGS['line_color']
+            data[y+v+1+l:y+s+1, x] = ARGS['line_color']
+            
+            dx = choice((-1, 1))
+            data[y+v+1:y+v+1+l, x+dx*d] = ARGS['line_color']
+
+            data[y+v, x:x+dx*d + 1*dx:dx] = ARGS['line_color']
+            data[y+v+1+l, x:x+dx*d + 1*dx:dx] = ARGS['line_color']
+
+# Paint
 image = Image.fromarray(data)
 
-# coloring each puzzle
-if COLORED:
-    for y in range(0, HEIGHT, 8):
-        for x in range(0, WIDTH, 8):
-            ImageDraw.floodfill(image, (x+4, y+4), choice(CELL_COLORS))
+for y in range(0, ARGS['image_height'] - 1, s + 1):    
+    for x in range(0, ARGS['image_width'] - 1, s + 1):
+        ImageDraw.floodfill(image, (x+1, y+1), choice(ARGS['colorset']))
 
-image = image.resize(RESIZE_TO, resample=Image.Resampling.BOX)
+image = resize(
+    image,
+    ARGS['image_width'] * ARGS['image_scale_factor'],
+    ARGS['image_height'] * ARGS['image_scale_factor'],
+)
 
-image.save('image.png')
-image.show()
+show_and_save(image, ARGS['output'], ARGS['quiet'])

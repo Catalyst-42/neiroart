@@ -524,7 +524,7 @@ def add_argument(argument, parser, ARGS, script_name):
 
         case 'colorset':
             parser.add_argument(
-                '-c', '-tc',
+                '-c',
                 help='List of colors for tiles',
                 default=ARGS['colorset'],
                 type=str,
@@ -632,7 +632,7 @@ def add_argument(argument, parser, ARGS, script_name):
                 dest='line_thickness',
             )
 
-        case 'line_color':
+        case 'line_color' if script_name == 'coprimes':
             parser.add_argument(
                 '-c', '-lc',
                 help='Color of dashes',
@@ -691,6 +691,43 @@ def add_argument(argument, parser, ARGS, script_name):
                 default=ARGS['image_height'],
                 type=argtypes.coprime,
                 dest='image_height',
+            )
+
+        # Puzzles
+        case 'tile_side':
+            parser.add_argument(
+                '-t', '-p',
+                help='Side of one puzzle in pixels',
+                default=ARGS['tile_side'],
+                type=int,
+                dest='tile_side',
+            )
+
+        case 'ledge_length':
+            parser.add_argument(
+                '-l',
+                help='Length of puzzle ledge in pixels',
+                default=ARGS['ledge_length'],
+                type=int,
+                dest='ledge_length',
+            )
+
+        case 'ledge_depth':
+            parser.add_argument(
+                '-d',
+                help='Depth of puzzle ledge in pixels',
+                default=ARGS['ledge_depth'],
+                type=int,
+                dest='ledge_depth',
+            )
+
+        case 'line_color':
+            parser.add_argument(
+                '-lc',
+                help='Color of puzzle border',
+                default=ARGS['line_color'],
+                type=argtypes.color,
+                dest='line_color',
             )
 
         case _:  # TODO: Remove

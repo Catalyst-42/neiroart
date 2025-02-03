@@ -7,7 +7,7 @@ from setup import setup
 from utils import (
     resize,
     limit,
-    show_and_save,
+    show_and_save
 )
 
 ARGS = setup('mapper')

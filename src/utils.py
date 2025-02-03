@@ -5,7 +5,7 @@ from random import (
 )
 
 from groups import (
-    zombatar_colors,
+    zombatar_colors
 )
 
 

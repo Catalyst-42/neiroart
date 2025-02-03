@@ -1,11 +1,8 @@
 import argparse
-import PIL
 
 import random
 import time
 import re
-
-import PIL.Image
 
 from groups import (
     glyph_sets,
@@ -199,7 +196,7 @@ def coprime(value: str):
     if value == ':random':
         return None
     
-    if value.isnumeric():
+    elif value.isnumeric():
         return int(value)
     
     raise argparse.ArgumentTypeError(
