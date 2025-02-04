@@ -4,7 +4,7 @@ import random
 import time
 import re
 
-from groups import (
+from aliases import (
     glyph_sets,
     colors,
     color_sets,
@@ -142,7 +142,7 @@ def none_or_int(value: str):
 
 
 def effects(value):
-    if value == "0":
+    if value == '0':
         return ''
     
     elif re.match(r"[1-6]+", value):

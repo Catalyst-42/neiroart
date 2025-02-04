@@ -15,7 +15,7 @@ from utils import (
 
 ARGS = setup('glyphs')
 
-if ARGS['as'] == 'tiles':
+if ARGS['by'] == 'tiles':
     ARGS['image_width'] *= ARGS['font_size'] + ARGS['font_padding']
     ARGS['image_width'] += ARGS['font_padding']
 

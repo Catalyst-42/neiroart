@@ -1,4 +1,14 @@
 colors = {
+    ':black': (0, 0, 0),
+    ':white': (255, 255, 255),
+    ':red': (255, 0, 0),
+    ':green': (0, 255, 0),
+    ':blue': (0, 0, 255),
+    ':pink': (255, 0, 255),
+    ':cyan': (0, 255, 255),
+    ':yellow': (255, 255, 0),
+
+    ':c:black': (21, 23, 32),
     ':c:red': (255, 99, 132),
     ':c:orange': (255, 159, 64),
     ':c:yellow': (255, 205, 86),
@@ -6,21 +16,40 @@ colors = {
     ':c:blue': (54, 162, 235),
     ':c:purple': (153, 102, 255),
     ':c:grey': (201, 203, 207),
-    ':c:black': (21, 23, 32),
 
-    ':white': (255, 255, 255),
-    ':black': (0, 0, 0),
+    ":p:black": (0, 0, 0),
+    ":p:dark-blue": (29, 43, 83),
+    ":p:dark-purple": (126, 37, 83),
+    ":p:dark-green": (0, 135, 81),
+    ":p:brown": (171, 82, 54),
+    ":p:dark-grey": (95, 87, 79),
+    ":p:light-grey": (194, 195, 199),
+    ":p:white": (255, 241, 232),
+    ":p:red": (255, 0, 77),
+    ":p:orange": (255, 163, 0),
+    ":p:yellow": (255, 236, 39),
+    ":p:green": (0, 228, 54),
+    ":p:blue": (41, 173, 255),
+    ":p:lavender": (131, 118, 156),
+    ":p:pink": (255, 119, 168),
+    ":p:light-peach": (255, 204, 170),
 }
 
 color_sets = {
     ':casual': (
-        (255, 99, 132),
-        (255, 159, 64),
-        (255, 205, 86),
-        (75, 192, 192),
-        (54, 162, 235),
-        (153, 102, 255),
-        (201, 203, 207),
+        tuple(
+            colors[c] for c in colors
+            if c.startswith(':c:') and c != ':c:black'
+        )
+    ),
+    ':pico-8': (
+        tuple(
+            colors[c] for c in colors
+            if c.startswith(':p:') and c != ':p:black'
+        )
+    ),
+    ':base': (
+        tuple(colors[c] for c in colors if c.count(':') == 1)
     ),
     ':grayscale': (
         tuple((c, c, c) for c in range(255, 0, -32))
@@ -34,8 +63,14 @@ color_sets = {
     ':bluescale': (
         tuple((0, 0, c) for c in range(255, 0, -32))
     ),
-    ':purplescale': (
+    ':pinkscale': (
         tuple((c, 0, c) for c in range(255, 0, -32))
+    ),
+    ':cyanscale': (
+        tuple((0, c, c) for c in range(255, 0, -32))
+    ),
+    ':yellowscale': (
+        tuple((c, c, 0) for c in range(255, 0, -32))
     ),
 }
 

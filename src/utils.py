@@ -4,7 +4,7 @@ from random import (
     choice
 )
 
-from groups import (
+from aliases import (
     zombatar_colors
 )
 

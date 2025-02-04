@@ -24,18 +24,18 @@ quiet = false    # -q
 output = false   # -o <filename>
 
 [glyphs]
-font_name = 'fonts/Metafont.ttf'  # -fn <str>
+font_name = 'fonts/Metafont.ttf'  # -f -fn <str>
 font_size = 10                    # -fs <int>
-font_padding = 2                  # -fp -fm <int>
+font_padding = 2                  # -p -fp -fm <int>
 font_aliasing = true              # -fa
 
-glyphset = ':borders'          # -g  <glyphset | str>
+glyphset = ':all'              # -g  <glyphset | str>
 colorset = ':casual'           # -c <colorset> | <color> [<color> ...]
 background_color = ':c:black'  # -bg <color: r,g,b | #rrggbb | #rgb>
 
 image_width = 10   # -w <int>
 image_height = 10  # -h <int>
-as = 'tiles'       # -as {'pixels', 'tiles'}
+by = 'tiles'       # -by {'pixels', 'tiles'}
 
 image_scale_factor = 4  # -x <int>
 
@@ -83,7 +83,7 @@ color_style = ':spot'          # -m -cs {':random', ':pulse', ':spot'}
 
 image_width = 26   # -w <int>
 image_height = 26  # -h <int>
-as = 'tiles'       # -as {'pixels', 'tiles'}
+by = 'tiles'       # -by {'pixels', 'tiles'}
 
 image_scale_factor = 4  # -x <int>
 
@@ -92,12 +92,12 @@ move_straight = true    # -ms
 move_diagonal = false   # -md
 move_backwards = false  # -mb
 
-step_min_length = 2  # -smin <int>
-step_max_length = 2  # -smax <int>
+step_min_length = 1  # -smin <int>
+step_max_length = 1  # -smax <int>
 step_limit = 8169    # -l -sl -lim <int>
 
-colorset = ':casual'           # -c <colorset> | <color> [<color> ...]
-background_color = ':c:black'  # -bg <color: r,g,b | #rrggbb | #rgb>
+colorset = ':white'          # -c <colorset> | <color> [<color> ...]
+background_color = ':black'  # -bg <color: r,g,b | #rrggbb | #rgb>
 
 image_width = 128   # -w <int>
 image_height = 128  # -h <int>
@@ -128,8 +128,8 @@ ledge_depth = 2   # -d <int>
 line_color = ':c:black'  # -lc <color: r,g,b | #rrggbb | #rgb>
 colorset = ':casual'     # -c <colorset> | <color> [<color> ...]
 
-image_width = 4   # -w <int | :random as 10-100 range> 
-image_height = 4  # -h <int | :random as 10-100 range> 
-as = 'tiles'      # -as {'pixels', 'tiles'}
+image_width = 7   # -w <int | :random as 10-100 range> 
+image_height = 7  # -h <int | :random as 10-100 range> 
+by = 'tiles'      # -by {'pixels', 'tiles'}
 
 image_scale_factor = 6  # -x <int>

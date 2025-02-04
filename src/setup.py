@@ -2,7 +2,7 @@ import argparse
 import tomllib
 
 import argtypes
-import groups
+import aliases
 
 # This setup file configures all parameters for argparse
 # for all scripts. Default values stored in settings.toml,
@@ -132,7 +132,7 @@ def add_argument(argument, parser, ARGS, script_name):
         # Glyphs
         case 'font_name':
             parser.add_argument(
-                '-fn',
+                '-f', '-fn',
                 help='Set up font by given name',
                 default=ARGS['font_name'],
                 type=str,
@@ -150,7 +150,7 @@ def add_argument(argument, parser, ARGS, script_name):
 
         case 'font_padding':
             parser.add_argument(
-                '-fp', '-fm',
+                '-p', '-fp', '-fm',
                 help='Gap between glyphs on image',
                 default=ARGS['font_padding'],
                 type=int,
@@ -200,7 +200,7 @@ def add_argument(argument, parser, ARGS, script_name):
                 '-w',
                 help=(
                     'Image width. Can be parametrized with -as '
-                    'flag as pixels or tiles (if available)',
+                    'flag as pixels or tiles (if available)'
                 ),
                 default=ARGS['image_width'],
                 type=argtypes.dimension,
@@ -212,20 +212,20 @@ def add_argument(argument, parser, ARGS, script_name):
                 '-h',
                 help=(
                     'Image height. Can be parametrized with -as '
-                    'flag as pixels or tiles (if available)',
+                    'flag as pixels or tiles (if available)'
                 ),
                 default=ARGS['image_height'],
                 type=argtypes.dimension,
                 dest='image_height',
             )
 
-        case 'as':
+        case 'by':
             parser.add_argument(
-                '-as',
+                '-by',
                 help='The size unit for image width and height',
-                default=ARGS['as'],
+                default=ARGS['by'],
                 choices=('pixels', 'tiles'),
-                dest='as',
+                dest='by',
             )
 
         case 'image_scale_factor':
@@ -665,7 +665,7 @@ def add_argument(argument, parser, ARGS, script_name):
                 help='Exclude figure segments on image',
                 default=ARGS['exclude'],
                 dest='exclude',
-                choices=list(groups.figures.keys()),
+                choices=list(aliases.figures.keys()),
                 nargs='+'
             )
 
@@ -730,9 +730,6 @@ def add_argument(argument, parser, ARGS, script_name):
                 dest='line_color',
             )
 
-        case _:  # TODO: Remove
-            print(f'Argument {argument} not found!')
-
 
 def setup(script_name):
     settings = tomllib.load(open('settings.toml', 'rb'))
@@ -756,10 +753,13 @@ def setup(script_name):
         'worm': {
             'show_colors': argtypes.show_colors,
             'show_colorsets': argtypes.show_colorsets
-
         },
-        'primes': {
+        'coprimes': {
+            'show_colors': argtypes.show_colors
+        },
+        'puzzles': {
             'show_colors': argtypes.show_colors,
+            'show_colorsets': argtypes.show_colorsets
         }
     }.get(script_name, dict())
 
@@ -786,8 +786,6 @@ def setup(script_name):
     [helps[helper]() for helper in helps if ARGS[helper]]
     if any([ARGS[helper] for helper in helps]):
         exit(0)
-
-    # TODO: Validate all inputted values?
 
     # print(ARGS)
     return ARGS

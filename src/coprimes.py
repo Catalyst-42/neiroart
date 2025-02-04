@@ -5,7 +5,7 @@ from math import gcd
 from random import randint
 
 from setup import setup
-from groups import figures
+from aliases import figures
 from utils import (
     resize,
     show_and_save

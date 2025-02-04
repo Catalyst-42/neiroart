@@ -88,7 +88,7 @@ for i in level_text:
 
 # Additional effects
 x, y = 10, 18
-effects_str = ARGS['effects'] or (
+effects_str = ARGS['effects'] if ARGS['effects'] is not None else (
     sample(list('123456'), randint(0, 6))
 )
 

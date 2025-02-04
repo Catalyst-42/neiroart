@@ -16,7 +16,7 @@ from utils import (
 ARGS = setup('puzzles')
 s = ARGS['tile_side']
 
-if ARGS['as'] == 'tiles':
+if ARGS['by'] == 'tiles':
     ARGS['image_width'] *= (s + 1)
     ARGS['image_width'] += 1
 
@@ -26,7 +26,7 @@ if ARGS['as'] == 'tiles':
 # Create canvas
 data = np.full(
     (ARGS['image_height'], ARGS['image_width'], 3),
-    (0, 0, 0),
+    tuple(255 - c for c in ARGS['line_color']),
     np.uint8
 )
 
@@ -40,11 +40,10 @@ data[:, -1] = ARGS['line_color']
 # Ledges
 l = ARGS['ledge_length']
 d = ARGS['ledge_depth']
+v = ceil((s - l) / 2)  # Length of baseline parts
 
 for y in range(0, ARGS['image_height'] - 1, s + 1):    
     for x in range(0, ARGS['image_width'] - 1, s + 1):
-        v = ceil((s - l) / 2)
-
         if y != 0 and y != ARGS['image_height'] - 1:
             # _    _ of  _|‾‾|_
             data[y, x:x+v + 1] = ARGS['line_color']
@@ -55,8 +54,8 @@ for y in range(0, ARGS['image_height'] - 1, s + 1):
             data[y+dy*d, x+v+1:x+v+1+l] = ARGS['line_color']
 
             #  |  |  of  _|‾‾|_
-            data[y:y+dy*d + 1*dy:dy, x+v] = ARGS['line_color']
-            data[y:y+dy*d + 1*dy:dy, x+v+1+l] = ARGS['line_color']
+            data[y:y+dy*d+dy:dy, x+v] = ARGS['line_color']
+            data[y:y+dy*d+dy:dy, x+v+1+l] = ARGS['line_color']
 
         # Same things but on y axis
         if x != 0 and x != ARGS['image_width'] - 1:
@@ -66,8 +65,8 @@ for y in range(0, ARGS['image_height'] - 1, s + 1):
             dx = choice((-1, 1))
             data[y+v+1:y+v+1+l, x+dx*d] = ARGS['line_color']
 
-            data[y+v, x:x+dx*d + 1*dx:dx] = ARGS['line_color']
-            data[y+v+1+l, x:x+dx*d + 1*dx:dx] = ARGS['line_color']
+            data[y+v, x:x+dx*d+dx:dx] = ARGS['line_color']
+            data[y+v+1+l, x:x+dx*d+dx:dx] = ARGS['line_color']
 
 # Paint
 image = Image.fromarray(data)

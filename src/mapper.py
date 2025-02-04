@@ -28,7 +28,7 @@ tileset = tuple(  # Slice tileset to list
     for y in range(0, t.shape[1], tile_height)
 )
 
-if ARGS['as'] == 'tiles':
+if ARGS['by'] == 'tiles':
     ARGS['image_width'] *= cell_width 
     ARGS['image_width'] += tile_padding
 
