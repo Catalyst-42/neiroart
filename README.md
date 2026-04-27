@@ -17,6 +17,9 @@ You can also pass different `:aliases` in parameters. Aliases can be found via a
 # Glyphs
 --show-glyphsets
 
+# Mapper
+--show-tilesets
+
 # Colors
 --show-colors
 --show-colorsets
