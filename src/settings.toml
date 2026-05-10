@@ -32,6 +32,8 @@ font_size = 10                    # -fs <int>
 font_padding = 2                  # -p -fp -fm <int>
 font_aliasing = true              # -fa
 
+random_order = false           # -r
+
 glyphset = ':all'              # -g  <glyphset | str>
 colorset = ':casual'           # -c <colorset> | <color> [<color> ...]
 background_color = ':c:black'  # -bg <color: r,g,b | #rrggbb | #rgb>

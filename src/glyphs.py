@@ -47,6 +47,13 @@ except OSError:
     exit(0)
 
 # Draw glyphs
+random_order = ARGS['random_order']
+chars = []
+if not random_order:
+    for i in range(len(glyphs)):
+        chars.append(glyphs[i])
+char_index = 0
+
 for x in range(
         ARGS['font_padding'],
         ARGS['image_width'],
@@ -58,12 +65,13 @@ for x in range(
             ARGS['font_size'] + ARGS['font_padding']
         ):
         draw.text(
-            xy=(x + ARGS['font_size']//2, y + ARGS['font_size']//2),
-            text=choice(glyphs),
+            xy=(y + ARGS['font_size']//2, x + ARGS['font_size']//2),
+            text=choice(glyphs) if random_order else chars[char_index % len(chars)],
             font=font,
             fill=choice(colors),
             anchor='mm'
         )
+        char_index += 1 if ARGS['random_order'] != [] else 0
 
 image = resize(
     image,
